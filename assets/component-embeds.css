@@ -1,0 +1,21 @@
+/*
+  AUDIT HEADER:
+  File: assets/component-embeds.css
+  Purpose: Styles for map and reviews iframe embeds in footer area
+  Trigger: Used when settings.show_store_map or settings.show_reviews are enabled
+  Dependencies: sections/footer.liquid conditional blocks
+*/
+
+.reviews-embeds,
+.store-map {
+    margin-block: 2rem;
+}
+
+.reviews-embed,
+.map-embed {
+    width: 100%;
+    min-height: 360px;
+    border: 0;
+    border-radius: var(--text-boxes-radius, 0);
+    box-shadow: rgba(0, 0, 0, 0.05) 0 4px 16px;
+}

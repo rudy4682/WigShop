@@ -287,7 +287,6 @@ function debounce(fn, wait) {
   };
 }
 
-
 function throttle(fn, delay) {
   let lastCall = 0;
   return function (...args) {
@@ -1282,51 +1281,181 @@ if (!customElements.get('bulk-add')) {
 }
 
 class CartPerformance {
-  static #metric_prefix = "cart-performance"
+  static #metric_prefix = 'cart-performance';
 
   static createStartingMarker(benchmarkName) {
-    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`
+    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`;
     return performance.mark(`${metricName}:start`);
   }
 
   static measureFromEvent(benchmarkName, event) {
-    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`
+    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`;
     const startMarker = performance.mark(`${metricName}:start`, {
-      startTime: event.timeStamp
+      startTime: event.timeStamp,
     });
 
     const endMarker = performance.mark(`${metricName}:end`);
 
-    performance.measure(
-      metricName,
-      `${metricName}:start`,
-      `${metricName}:end`
-    );
+    performance.measure(metricName, `${metricName}:start`, `${metricName}:end`);
   }
 
   static measureFromMarker(benchmarkName, startMarker) {
-    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`
+    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`;
     const endMarker = performance.mark(`${metricName}:end`);
 
-    performance.measure(
-      metricName,
-      startMarker.name,
-      `${metricName}:end`
-    );
+    performance.measure(metricName, startMarker.name, `${metricName}:end`);
   }
 
   static measure(benchmarkName, callback) {
-    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`
+    const metricName = `${CartPerformance.#metric_prefix}:${benchmarkName}`;
     const startMarker = performance.mark(`${metricName}:start`);
 
     callback();
 
     const endMarker = performance.mark(`${metricName}:end`);
 
-    performance.measure(
-      metricName,
-      `${metricName}:start`,
-      `${metricName}:end`
-    );
+    performance.measure(metricName, `${metricName}:start`, `${metricName}:end`);
   }
 }
+// === WIGSHOP Variant Logic v1.0 ===
+document.addEventListener('DOMContentLoaded', () => {
+  const productForms = document.querySelectorAll('form[action*="/cart/add"]');
+
+  productForms.forEach((form) => {
+    const addToCartBtn = form.querySelector('[type="submit"]');
+    const dropdown = form.querySelector('select[data-variant-select]');
+    const swatches = form.querySelectorAll('[data-variant-swatch]');
+    const priceWrapper = form.querySelector('[data-price-wrapper]');
+    const saleBadge = form.querySelector('[data-sale-badge]');
+
+    // Insert "Make a selection" row if not present
+    if (dropdown && !dropdown.querySelector('[value=""]')) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Make a selection';
+      opt.selected = true;
+      dropdown.insertBefore(opt, dropdown.firstChild);
+    }
+
+    // Initial state: disable ATC
+    if (addToCartBtn) {
+      addToCartBtn.disabled = true;
+      addToCartBtn.classList.add('disabled');
+    }
+
+    // Sync logic
+    function handleSelection(variantId) {
+      if (!variantId) {
+        // Reset state
+        if (addToCartBtn) addToCartBtn.disabled = true;
+        updatePriceFromLowest();
+        updateSaleBadge(null);
+        return;
+      }
+
+      const variantEl = form.querySelector(`[data-variant-id="${variantId}"]`);
+      if (!variantEl) return;
+
+      // Enable ATC if in stock
+      const qty = parseInt(variantEl.dataset.inventoryQuantity || '0', 10);
+      const availability = computeAvailability(qty);
+      applyAvailabilityStyles(variantEl, availability);
+
+      if (addToCartBtn) {
+        addToCartBtn.disabled = qty <= 0;
+      }
+
+      updatePrice(variantEl);
+      updateSaleBadge(variantEl);
+      updateSEO(variantEl);
+    }
+
+    // Dropdown change
+    if (dropdown) {
+      dropdown.addEventListener('change', (e) => {
+        const variantId = e.target.value;
+        // Sync swatch
+        swatches.forEach((sw) => {
+          sw.checked = sw.value === variantId;
+        });
+        handleSelection(variantId);
+      });
+    }
+
+    // Swatch change
+    swatches.forEach((sw) => {
+      sw.addEventListener('change', (e) => {
+        if (dropdown) dropdown.value = e.target.value;
+        handleSelection(e.target.value);
+      });
+    });
+
+    // Helpers
+    function computeAvailability(qty) {
+      const low = window.theme?.settings?.low_stock_limit || 9;
+      const veryLow = window.theme?.settings?.very_low_stock_limit || 3;
+      if (qty <= 0) return 'out';
+      if (qty <= veryLow) return 'very-low';
+      if (qty <= low) return 'low';
+      return 'available';
+    }
+
+    function applyAvailabilityStyles(el, status) {
+      el.classList.remove('available', 'low-stock', 'very-low-stock', 'out-of-stock');
+      switch (status) {
+        case 'out':
+          el.classList.add('out-of-stock');
+          break;
+        case 'very-low':
+          el.classList.add('very-low-stock');
+          break;
+        case 'low':
+          el.classList.add('low-stock');
+          break;
+        default:
+          el.classList.add('available');
+      }
+    }
+
+    function updatePriceFromLowest() {
+      // TODO: hydrate lowest variant price/compare-at from dataset
+      if (priceWrapper) {
+        priceWrapper.dataset.state = 'from';
+      }
+    }
+
+    function updatePrice(variantEl) {
+      if (priceWrapper) {
+        priceWrapper.dataset.state = 'selected';
+        priceWrapper.dataset.price = variantEl.dataset.price;
+        priceWrapper.dataset.compareAt = variantEl.dataset.compareAt;
+      }
+    }
+
+    function updateSaleBadge(variantEl) {
+      if (!saleBadge) return;
+      const threshold = window.theme?.settings?.sale_badge_threshold || 16;
+      if (!variantEl) {
+        saleBadge.hidden = true;
+        return;
+      }
+      const price = parseFloat(variantEl.dataset.price);
+      const compareAt = parseFloat(variantEl.dataset.compareAt);
+      if (compareAt > price) {
+        const pct = ((compareAt - price) / compareAt) * 100;
+        saleBadge.hidden = pct < threshold;
+      } else {
+        saleBadge.hidden = true;
+      }
+    }
+
+    function updateSEO(variantEl) {
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage && variantEl.dataset.image) {
+        ogImage.setAttribute('content', variantEl.dataset.image);
+      }
+      // TODO: update JSON-LD if present
+    }
+  });
+});
+// === End WIGSHOP Variant Logic ===

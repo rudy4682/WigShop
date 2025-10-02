@@ -890,6 +890,17 @@
     ]
   },
   {
+  "name": "Swatch Settings",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_dual_selector",
+      "label": "Enable Dual Selector (Swatches + Dropdown)",
+      "default": true
+    }
+  ]
+},
+  {
     "name": "t:settings_schema.content_containers.name",
     "settings": [
       {
@@ -1452,4 +1463,119 @@
       }
     ]
   }
+,
+{
+  "name": "Inventory Display",
+  "settings": [
+    {
+      "type": "number",
+      "id": "stock_low_threshold",
+      "label": "Low Stock Threshold",
+      "default": 9,
+      "info": "Inventory quantity at or below this number will show 'Low' label"
+    },
+    {
+      "type": "number",
+      "id": "stock_very_low_threshold",
+      "label": "Very Low Stock Threshold",
+      "default": 3,
+      "info": "Inventory quantity at or below this number will show 'Very Low' label"
+    },
+    {
+      "type": "number",
+      "id": "sale_badge_threshold",
+      "label": "Sale Badge Discount %",
+      "default": 16,
+      "info": "Show 'Sale' badge if discount exceeds this percentage"
+    }
+  ]
+},
+{
+  "name": "Compliance & privacy",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_gdpr_banner",
+      "label": "Enable GDPR consent banner",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "privacy_policy_url",
+      "label": "Privacy Policy URL"
+    },
+    {
+      "type": "url",
+      "id": "cookie_policy_url",
+      "label": "Cookie Policy URL"
+    }
+    ,
+    {
+      "type": "text",
+      "id": "google_analytics_id",
+      "label": "Google Analytics Measurement ID (G-XXXX)",
+      "info": "Optional: your Google Analytics 4 Measurement ID. Will only be loaded when analytics consent is given."
+    },
+    {
+      "type": "text",
+      "id": "facebook_pixel_id",
+      "label": "Facebook Pixel ID (optional)",
+      "info": "Optional: Facebook Pixel ID. Will only be loaded when marketing consent is given."
+    }
+    ,
+    {
+      "type": "checkbox",
+      "id": "default_analytics_consent",
+      "label": "Default analytics consent (checked in banner)",
+      "default": false,
+      "info": "When a visitor has no stored consent, the analytics checkbox in the banner will be pre-checked if enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "default_marketing_consent",
+      "label": "Default marketing consent (checked in banner)",
+      "default": false,
+      "info": "When a visitor has no stored consent, the marketing checkbox in the banner will be pre-checked if enabled."
+    },
+    {
+      "type": "text",
+      "id": "consent_banner_message",
+      "label": "Consent banner message",
+      "default": "We use cookies and analytics to improve your experience.",
+      "info": "Optional custom message to show in the consent banner."
+    }
+  ]
+},
+{
+  "name": "Store info embeds",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show Google & Facebook reviews",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "google_reviews_embed_url",
+      "label": "Google reviews embed URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook_reviews_embed_url",
+      "label": "Facebook reviews embed URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_store_map",
+      "label": "Show Google Map",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "store_map_url",
+      "label": "Google Map embed URL"
+    }
+  ]
+}
 ]

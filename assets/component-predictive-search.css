@@ -223,3 +223,101 @@ predictive-search[loading] .predictive-search__results-groups-wrapper ~ .predict
   object-fit: contain;
   font-family: 'object-fit: contain';
 }
+/* --- Captions under product titles --- */
+.predictive-search__item-heading small {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(var(--color-foreground), 0.65);
+  margin-top: 0.25rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+.predictive-search__list-item:hover .predictive-search__item-heading small {
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+/* --- Section Headings: Products vs. Colors --- */
+#predictive-search-products,
+#predictive-search-colors {
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  margin: 0 2rem 0.75rem;
+  padding: 1rem 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(var(--color-foreground), 0.8);
+}
+
+/* Give Colors section a subtle background tint */
+#predictive-search-colors {
+  background-color: rgba(var(--color-accent, 180, 220, 255), 0.08);
+  border-radius: 0.4rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* --- Divider lines for Colors section --- */
+#predictive-search-results-colors-list .predictive-search__list-item {
+  border-top: 1px solid rgba(var(--color-foreground), 0.12);
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+#predictive-search-results-colors-list .predictive-search__list-item:first-child {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* --- Thumbnail polish --- */
+.predictive-search__image {
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(var(--color-shadow), 0.15);
+  background-color: #fff;
+}
+
+/* --- Hover highlight for entire row --- */
+.predictive-search__list-item:hover {
+  background-color: rgba(var(--color-foreground), 0.04);
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+/* --- Mobile-friendly adjustments --- */
+@media (max-width: 600px) {
+
+  /* Larger tap targets */
+  .predictive-search__list-item a {
+    padding: 1rem;
+  }
+
+  /* Stack thumbnail above text */
+  .predictive-search__item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .predictive-search__image {
+    width: 100%;
+    max-width: 120px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Smaller headings on mobile */
+  #predictive-search-products,
+  #predictive-search-colors {
+    font-size: 1rem;
+    margin: 1rem 1rem 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  /* Captions slightly larger for readability */
+  .predictive-search__item-heading small {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+}

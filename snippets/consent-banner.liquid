@@ -1,0 +1,78 @@
+{% comment %}
+  AUDIT HEADER:
+  File: snippets/consent-banner.liquid
+  Purpose: GDPR consent banner with category checkboxes; stores preferences and dispatches readiness
+  Trigger: Rendered in layout/theme.liquid near </body>
+  Dependencies: assets/consent.js (reads and applies stored consent, dispatches consent:ready)
+{% endcomment %}
+
+{% if settings.enable_gdpr_banner %}
+  <div
+    id="ConsentBanner"
+    class="consent-banner"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="consent-heading"
+    hidden
+  >
+    <form id="ConsentForm" class="consent-form" aria-describedby="consent-desc">
+      <h2 id="consent-heading" class="visually-hidden">
+        {{ 'privacy.consent.heading' | t | default: 'Cookie preferences' }}
+      </h2>
+      <p id="consent-desc" class="consent-message">
+        {{ settings.consent_banner_message | default: ( 'privacy.consent.message' | t | default: 'We use cookies and analytics to improve your experience.' ) }}
+      </p>
+
+      <fieldset class="consent-fieldset">
+        <legend class="visually-hidden">{{ 'privacy.consent.legend' | t | default: 'Cookie categories' }}</legend>
+        <label class="consent-option">
+          <input type="checkbox" name="necessary" checked disabled aria-disabled="true">
+          {{ 'privacy.consent.necessary' | t | default: 'Necessary cookies' }}
+        </label>
+
+        <label class="consent-option">
+          <input
+            type="checkbox"
+            name="analytics"
+            aria-checked="false"
+            {% if settings.default_analytics_consent %}
+              checked
+            {% endif %}
+          >
+          {{ 'privacy.consent.analytics' | t | default: 'Analytics' }}
+        </label>
+
+        <label class="consent-option">
+          <input
+            type="checkbox"
+            name="marketing"
+            aria-checked="false"
+            {% if settings.default_marketing_consent %}
+              checked
+            {% endif %}
+          >
+          {{ 'privacy.consent.marketing' | t | default: 'Marketing' }}
+        </label>
+      </fieldset>
+
+      <div class="consent-actions">
+        <button type="submit" class="button">
+          {{ 'privacy.consent.accept' | t | default: 'Save preferences' }}
+        </button>
+        <button type="button" id="ConsentReject" class="button button--muted">
+          {{ 'privacy.consent.reject' | t | default: 'Reject all' }}
+        </button>
+        {% if settings.privacy_policy_url %}
+          <a class="link" href="{{ settings.privacy_policy_url }}" target="_blank" rel="noopener">
+            {{ 'privacy.consent.privacy_link' | t | default: 'Privacy Policy' }}
+          </a>
+        {% endif %}
+        {% if settings.cookie_policy_url %}
+          <a class="link" href="{{ settings.cookie_policy_url }}" target="_blank" rel="noopener">
+            {{ 'privacy.consent.cookie_link' | t | default: 'Cookie Policy' }}
+          </a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+{% endif %}

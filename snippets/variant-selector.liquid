@@ -1,0 +1,140 @@
+{% comment %}
+  AUDIT: Variant Selector Component — WigShop Theme
+  Features:
+  - Dropdown with "Make a selection" + variant name, price, availability
+  - Swatches with inventory-based styling
+  - Sync logic between dropdown and swatches
+  - Publishes optionValueSelectionChange for product-info.js
+  - Inventory labels: Available / Low / Very Low / Out of Stock
+  - Styling: strikeout, yellow border, red border
+{% endcomment %}
+
+<div class="variant-selector">
+  <label for="variant-select">Choose a style:</label>
+  <select id="variant-select" name="id">
+    <option value="" disabled selected>Make a selection</option>
+    {% for variant in product.variants %}
+      {% assign qty = variant.inventory_quantity %}
+      {% assign availability = '' %}
+      {% if qty >= settings.stock_available_threshold %}
+        {% assign availability = 'Available' %}
+      {% elsif qty >= settings.stock_low_threshold %}
+        {% assign availability = 'Low' %}
+      {% elsif qty > 0 %}
+        {% assign availability = 'Very Low' %}
+      {% else %}
+        {% assign availability = 'Out of Stock' %}
+      {% endif %}
+
+      <option value="{{ variant.id }}" data-option-values="{{ variant.options | join: ',' }}">
+        {{ variant.title }} — {{ variant.price | money }} — {{ availability }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <ul class="variant-swatches">
+    {% for variant in product.variants %}
+      {% assign qty = variant.inventory_quantity %}
+      {% assign swatch_class = '' %}
+      {% if qty == 0 %}
+        {% assign swatch_class = 'swatch-out' %}
+      {% elsif qty <= settings.stock_very_low_threshold %}
+        {% assign swatch_class = 'swatch-very-low' %}
+      {% elsif qty <= settings.stock_low_threshold %}
+        {% assign swatch_class = 'swatch-low' %}
+      {% endif %}
+
+      <li
+        class="swatch {{ swatch_class }}"
+        data-variant-id="{{ variant.id }}"
+        data-option-values="{{ variant.options | join: ',' }}"
+      >
+        {% render 'swatch', variant: variant, swatch: variant, shape: 'square' %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Scope behavior to each component instance to avoid cross-instance collisions
+    document.querySelectorAll('.variant-selector').forEach(function (root) {
+      const select = root.querySelector('select[name="id"]');
+      const swatches = root.querySelectorAll('.swatch');
+
+      function publishSelection(targetEl, optionValuesCsv) {
+        const selectedOptionValues = (optionValuesCsv || '').split(',').filter(Boolean);
+        const variantId = targetEl?.value || root.querySelector('.swatch.selected')?.dataset.variantId || null;
+
+        // If theme implements a pub/sub helper, call it (keeps backward compatibility)
+        if (window.publish && window.PUB_SUB_EVENTS) {
+          window.publish(window.PUB_SUB_EVENTS.optionValueSelectionChange, {
+            data: {
+              event: new Event('change'),
+              target: targetEl,
+              selectedOptionValues,
+            },
+          });
+        }
+
+        // Dispatch a DOM CustomEvent so listeners attached via addEventListener can respond
+        const detail = { target: targetEl, selectedOptionValues, variantId };
+        document.dispatchEvent(new CustomEvent('optionValueSelectionChange', { detail }));
+
+        // Also dispatch a generic variant change event for any other integrations
+        document.dispatchEvent(new CustomEvent('variant:change', { detail }));
+      }
+
+      if (!select) return;
+
+      // When the native select changes (user or programmatic), update swatches and notify listeners
+      select.addEventListener('change', function () {
+        const opt = this.options[this.selectedIndex];
+        swatches.forEach(function (s) {
+          s.classList.toggle('selected', s.dataset.variantId === String(select.value));
+        });
+        publishSelection(this, opt?.dataset.optionValues || '');
+      });
+
+      // Clicking a swatch sets the select, triggers a native change event, and publishes selection
+      swatches.forEach(function (swatch) {
+        swatch.addEventListener('click', function () {
+          if (select) {
+            select.value = this.dataset.variantId;
+            swatches.forEach(function (s) {
+              s.classList.toggle('selected', s === swatch);
+            });
+
+            // Dispatch a native change event so existing listeners (product-form, media gallery, etc.) update automatically.
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+
+            // Publish selection for pub/sub or DOM-listener consumers.
+            publishSelection(select, this.dataset.optionValues || '');
+          } else {
+            // Fallback: no select present (rare) — still publish selection
+            swatches.forEach(function (s) {
+              s.classList.toggle('selected', s === swatch);
+            });
+            publishSelection(null, this.dataset.optionValues || '');
+          }
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  .swatch-out {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .swatch-low {
+    border: 2px solid yellow;
+  }
+  .swatch-very-low {
+    border: 2px solid red;
+  }
+  .swatch.selected {
+    outline: 2px solid black;
+  }
+</style>

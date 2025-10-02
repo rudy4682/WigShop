@@ -1,21 +1,27 @@
 {% comment %}
-  Renders product variant options
-
+  AUDIT HEADER — WigShop v1.0
+  File: snippets/product-variant-options.liquid
+  Purpose: Renders product variant options for swatch, button, or dropdown pickers
   Accepts:
-  - product: {Object} product object.
-  - option: {Object} current product_option object.
-  - block: {Object} block object.
-  - picker_type: {String} type of picker to dispay
-
-
+    - product: {Object} product object
+    - option: {Object} current product_option object
+    - block: {Object} block object
+    - picker_type: {String} type of picker to display
+  Notes:
+    - Delegates swatch rendering to swatch-input.liquid → swatch.liquid
+    - Passes full variant object for image + tooltip support
+    - Forces square swatches for consistency
+    - Adds data attributes for product-info.js sync
+    - Ensures unavailable options are marked visually and with accessibility text
   Usage:
-  {% render 'product-variant-options',
-    product: product,
-    option: option,
-    block: block
-    picker_type: picker_type
-  %}
+    {% render 'product-variant-options',
+      product: product,
+      option: option,
+      block: block,
+      picker_type: picker_type
+    %}
 {% endcomment %}
+
 {%- liquid
   assign product_form_id = 'product-form-' | append: section.id
 -%}
@@ -59,23 +65,20 @@
   {%- endcapture -%}
 
   {%- if picker_type == 'swatch' -%}
-    {%- capture help_text -%}
-      <span class="visually-hidden">{{ value | escape }}</span>
-      {{ label_unavailable }}
-    {%- endcapture -%}
     {%
       render 'swatch-input',
       id: input_id,
       name: input_name,
-      value: value | escape,
+      value: value,
       swatch: value.swatch,
+      variant: value,                <!-- ✅ pass full variant -->
       product_form_id: product_form_id,
       checked: value.selected,
       visually_disabled: option_disabled,
-      shape: block.settings.swatch_shape,
-      help_text: help_text,
+      shape: 'square',               <!-- ✅ force square -->
       additional_props: input_dataset
     %}
+
   {%- elsif picker_type == 'button' -%}
     <input
       type="radio"
@@ -91,10 +94,11 @@
       {% endif %}
       {{ input_dataset }}
     >
-    <label for="{{ input_id }}">
+    <label for="{{ input_id }}" title="{{ value | escape }}">
       {{ value -}}
       {{ label_unavailable }}
     </label>
+
   {%- elsif picker_type == 'dropdown' or picker_type == 'swatch_dropdown' -%}
     <option
       id="{{ input_id }}"

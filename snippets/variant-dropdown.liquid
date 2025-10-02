@@ -1,0 +1,57 @@
+{% comment %}
+  AUDIT HEADER — WigShop v1.0
+  File: snippets/variant-dropdown.liquid
+  Purpose: Renders variant dropdown with "Make a selection" placeholder
+  Fixes:
+    - Uses translation key products.product.make_a_selection
+    - Publishes optionValueSelectionChange for product-info.js
+    - Replaces deprecated img_url with image_url
+{% endcomment %}
+
+<select
+  id="VariantDropdown-{{ section.id }}"
+  class="variant-dropdown"
+  name="id"
+  form="{{ product_form_id }}"
+  data-product-url="{{ product.url }}"
+>
+  <option value="">{{ 'products.product.make_a_selection' | t }}</option>
+  {% for variant in product.variants %}
+    <option
+      value="{{ variant.id }}"
+      data-variant-id="{{ variant.id }}"
+      data-option-values="{{ variant.options | join: ',' }}"
+      data-inventory-quantity="{{ variant.inventory_quantity }}"
+      data-price="{{ variant.price | divided_by: 100.0 }}"
+      data-compare-at="{{ variant.compare_at_price | divided_by: 100.0 }}"
+      data-image="{{ variant.featured_media | image_url: width: 600, height: 600 }}"
+      {% unless variant.available %}disabled{% endunless %}
+    >
+      {{ variant.title }} — {{ variant.price | money }}
+    </option>
+  {% endfor %}
+</select>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('VariantDropdown-{{ section.id }}');
+    if (!select) return;
+
+    select.addEventListener('change', function () {
+      const opt = select.options[select.selectedIndex];
+      const selectedOptionValues = (opt?.dataset.optionValues || '')
+        .split(',')
+        .filter(v => v !== '');
+
+      if (window.publish && window.PUB_SUB_EVENTS) {
+        window.publish(window.PUB_SUB_EVENTS.optionValueSelectionChange, {
+          data: {
+            event: new Event('change'),
+            target: select,
+            selectedOptionValues
+          }
+        });
+      }
+    });
+  });
+</script>

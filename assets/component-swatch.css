@@ -1,25 +1,108 @@
-/* swatch lives in its own file for reusability of the swatch in swatch-input and dropdown */
+/* AUDIT HEADER — WigShop v1.0
+   File: assets/component-swatch.css
+   Purpose: Base swatch styles + inventory status classes
+   Notes:
+     - Used by swatch.liquid and swatch-input.liquid
+     - Inventory classes: swatch-out, swatch-very-low, swatch-low
+     - Default shape is square (border-radius override)
+     - Supports hover tooltips via title attribute
+*/
+
+/* Base swatch styles */
 .swatch {
   --swatch--size: var(--swatch-input--size, 4.4rem);
-  --swatch--border-radius: var(--swatch-input--border-radius, 50%);
+  --swatch--border-radius: var(--swatch-input--border-radius, 0.2rem);
 
   display: block;
   width: var(--swatch--size);
   max-width: 100%;
   aspect-ratio: 1 / 1;
   background: var(--swatch--background);
-  background-position: var(--swatch-focal-point, initial);
+  background-position: var(--swatch-focal-point, center);
   background-size: cover;
   background-origin: border-box;
   border: 0.1rem solid rgba(var(--color-foreground), 0.15);
   border-radius: var(--swatch--border-radius);
+  cursor: pointer;
+  /* makes hover tooltips feel natural */
 }
 
+/* Explicit square swatches */
 .swatch--square {
-  --swatch--border-radius: var(--swatch-input--border-radius, 0.2rem);
+  --swatch--border-radius: 0.2rem;
 }
 
+/* Unavailable swatches */
 .swatch--unavailable {
   border-style: dashed;
   border-color: rgba(var(--color-foreground), 0.5);
+}
+
+/* Inventory status styles */
+
+/* Out-of-stock swatch: neon red diagonal strike bottom-left → top-right */
+.swatch-out {
+  position: relative;
+  opacity: 0.6;
+}
+
+.swatch-out::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  border-top: 2px solid #ff073a;
+  /* 🔴 neon red strike line */
+  transform: rotate(-45deg);
+  /* diagonal bottom-left → top-right */
+  transform-origin: center;
+  pointer-events: none;
+  /* don’t block clicks */
+}
+
+/* Very low stock: neon orange border */
+.swatch-very-low {
+  border: 0.2rem solid #ff6f00;
+}
+
+/* Low stock: neon yellow border */
+.swatch-low {
+  border: 0.2rem solid #faff00;
+}
+
+/* Tooltip shown on hover/focus */
+.swatch {
+  position: relative;
+}
+
+.swatch-tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(100% + 0.6rem);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.swatch:focus-within .swatch-tooltip,
+.swatch:hover .swatch-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-0.2rem);
+  pointer-events: auto;
+}
+
+/* Swatch list/grid layout similar to wigs.com: multi-row responsive grid */
+.variant-picker--swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--swatch--size, 3.6rem), 1fr));
+  gap: 0.6rem;
+  align-items: start;
 }

@@ -1,7 +1,12 @@
 <link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-cart-notification.css' | asset_url }}" media="print" onload="this.media='all'">
+<link
+  rel="stylesheet"
+  href="{{ 'component-cart-notification.css' | asset_url }}"
+  media="print"
+  onload="this.media='all'"
+>
 
 {%- if settings.predictive_search_enabled -%}
   <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -10,7 +15,6 @@
 {%- if section.settings.menu_type_desktop == 'mega' -%}
   <link rel="stylesheet" href="{{ 'component-mega-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
-
 
 <style>
   header-drawer {
@@ -70,6 +74,201 @@
       padding-top: 0.5rem;
     }
   }
+
+  /* Ensure the header search is visible on tablet & desktop and compact on mobile.
+     - Desktop / Tablet (>= 750px): show full search form, hide icon button.
+     - Mobile (< 750px): hide full search form, show only the icon trigger.
+     This block intentionally uses specific selectors and media queries to
+     override broader rules in base.css without changing global stylesheet. */
+  .header__search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .header__search-form,
+  .header__search-form .search__input,
+  .header__search-form .search__button {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .header__search-icon {
+    display: none;
+  }
+
+  /* Mobile: collapse to icon only */
+  @media screen and (max-width: 749px) {
+    .header__search-form { display: none !important; } /* hide full form on mobile */
+    .header__search-icon { display: inline-flex !important; align-items: center; justify-content: center; }
+    .header__search { gap: 0; }
+  }
+
+  /* Tablet + Desktop: show full form, hide icon */
+  @media screen and (min-width: 750px) {
+    .header__search-form { display: inline-flex !important; }
+    .header__search-icon { display: none !important; }
+  }
+
+  /* Theme-level rules in `assets/base.css` may hide .header__search in
+     certain header variants or when a menu-drawer precedes it. The rules
+     below are a narrowly-scoped override to ensure the full search form
+     is visible on tablet and desktop while preserving mobile behavior. */
+  @media screen and (min-width: 750px) {
+    /* If a menu-drawer immediately precedes the search, don't hide it */
+    menu-drawer + .header__search { display: inline-flex !important; }
+
+    /* If header variant rules hide the direct child search, prefer showing it */
+    .header > .header__search,
+    .header * > .header__search { display: inline-flex !important; }
+  }
+
+  /* Desktop/tablet layout: place logo top-left and search top-center for the
+     'top-left' header variant. This overrides the theme's default grid area
+     assignments without editing global `base.css`. */
+  @media screen and (min-width: 990px) {
+    .header--top-left .header__heading,
+    .header--top-left .header__heading-link {
+      /* move the heading (logo) into the left column */
+      grid-area: left-icons;
+      justify-self: start;
+      align-self: center;
+    }
+
+    .header--top-left > .header__search,
+    .header--top-left * > .header__search {
+      /* place the search in the center heading area */
+      grid-area: heading;
+      justify-self: center;
+      display: inline-flex !important;
+      align-items: center;
+    }
+
+    .header--top-left .header__icons {
+      grid-area: icons;
+      justify-self: end;
+    }
+  }
+
+  /* Mobile overlay state when user taps the search icon */
+  .header.search-active .header__search-form {
+    display: inline-flex !important;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height, 0);
+    padding: 1rem;
+    background: rgb(var(--color-background));
+    z-index: 1200;
+    box-shadow: 0 0.6rem 1.2rem rgba(var(--color-foreground), 0.06);
+    align-items: center;
+  }
+
+  .header.search-active .header__search-icon { display: none !important; }
+
+  {%- if section.settings.sticky_header_type == 'reduce-logo-size' -%}
+    .scrolled-past-header .header__heading-logo-wrapper {
+      width: 75%;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.menu_type_desktop != "drawer" -%}
+    @media screen and (min-width: 990px) {
+      header-drawer {
+        display: none;
+      }
+    }
+  {%- endif -%}
+
+  .menu-drawer-container {
+    display: flex;
+  }
+
+  .list-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .list-menu--inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+  }
+
+  summary.list-menu__item {
+    padding-right: 2.7rem;
+  }
+
+  .list-menu__item {
+    display: flex;
+    align-items: center;
+    line-height: calc(1 + 0.3 / var(--font-body-scale));
+  }
+
+  .list-menu__item--link {
+    text-decoration: none;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    line-height: calc(1 + 0.8 / var(--font-body-scale));
+  }
+
+  @media screen and (min-width: 750px) {
+    .list-menu__item--link {
+      padding-bottom: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+
+  /* Ensure the header search is visible on tablet & desktop and compact on mobile.
+     - Desktop / Tablet (>= 750px): show full search form, hide icon button.
+     - Mobile (< 750px): hide full search form, show only the icon trigger.
+     This block intentionally uses specific selectors and media queries to
+     override broader rules in base.css without changing global stylesheet. */
+  .header__search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .header__search-form,
+  .header__search-form .search__input,
+  .header__search-form .search__button {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .header__search-icon {
+    display: none;
+  }
+
+  /* Mobile: collapse to icon only */
+  @media screen and (max-width: 749px) {
+    .header__search-form { display: none !important; } /* hide full form on mobile */
+    .header__search-icon { display: inline-flex !important; align-items: center; justify-content: center; }
+    .header__search { gap: 0; }
+  }
+
+  /* Tablet + Desktop: show full form, hide icon */
+  @media screen and (min-width: 750px) {
+    .header__search-form { display: inline-flex !important; }
+    .header__search-icon { display: none !important; }
+  }
+
+  /* Mobile overlay state when user taps the search icon */
+  .header.search-active .header__search-form {
+    display: inline-flex !important;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height, 0);
+    padding: 1rem;
+    background: rgb(var(--color-background));
+    z-index: 1200;
+    box-shadow: 0 0.6rem 1.2rem rgba(var(--color-foreground), 0.06);
+    align-items: center;
+  }
+
+  .header.search-active .header__search-icon { display: none !important; }
 </style>
 
 {%- style -%}
@@ -114,7 +313,12 @@
   endif
 %}
 
-<{{ header_tag }} {% if header_tag == 'sticky-header' %}data-sticky-type="{{ section.settings.sticky_header_type }}"{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
+<{{ header_tag }}
+  {% if header_tag == 'sticky-header' %}
+    data-sticky-type="{{ section.settings.sticky_header_type }}"
+  {% endif %}
+  class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
+>
   {%- liquid
     assign social_links = false
     assign localization_forms = false
@@ -132,41 +336,66 @@
       if section.settings.menu != blank
         render 'header-drawer'
       endif
-
-      if section.settings.logo_position == 'top-center' or section.settings.menu == blank
-        render 'header-search', input_id: 'Search-In-Modal-1'
-      endif
     -%}
 
     {%- if section.settings.logo_position != 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
         <h1 class="header__heading">
       {%- endif -%}
-          <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-            {%- if settings.logo != blank -%}
-              <div class="header__heading-logo-wrapper">
-                {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
-                {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
-                {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
-                {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
-                {{ settings.logo | image_url: width: 600 | image_tag:
-                  class: 'header__heading-logo motion-reduce',
-                  widths: widths,
-                  height: logo_height,
-                  width: settings.logo_width,
-                  alt: logo_alt,
-                  sizes: sizes,
-                  preload: true
-                }}
-              </div>
-            {%- else -%}
-              <span class="h2">{{ shop.name }}</span>
-            {%- endif -%}
-          </a>
+      <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
+        {%- if settings.logo != blank -%}
+          <div class="header__heading-logo-wrapper">
+            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+            {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+            {% capture sizes %}(max-width: {{ settings.logo_width | times: 2 }}px) 50vw, {{ settings.logo_width }}px{% endcapture %}
+            {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+            {{
+              settings.logo
+              | image_url: width: 600
+              | image_tag:
+                class: 'header__heading-logo motion-reduce',
+                widths: widths,
+                height: logo_height,
+                width: settings.logo_width,
+                alt: logo_alt,
+                sizes: sizes,
+                preload: true
+            }}
+          </div>
+        {%- else -%}
+          <span class="h2">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
       {%- if request.page_type == 'index' -%}
         </h1>
       {%- endif -%}
     {%- endif -%}
+
+    <!-- 🔎 Search Block -->
+    <div class="header__search">
+      <!-- Full search form (tablet/desktop) -->
+      <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form">
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'general.search.search' | t }}"
+          aria-label="{{ 'general.search.search' | t }}"
+          class="search__input field__input"
+        >
+        <button type="submit" class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+          <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
+        </button>
+      </form>
+
+      <!-- Mobile icon -->
+      <button class="header__search-icon" aria-label="Open search">
+        <svg class="icon icon-search" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none">
+          <circle cx="11" cy="11" r="8" stroke-width="2"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line>
+        </svg>
+      </button>
+    </div>
 
     {%- liquid
       if section.settings.menu != blank
@@ -176,33 +405,36 @@
           render 'header-mega-menu'
         endif
       endif
-    %}
+    -%}
 
     {%- if section.settings.logo_position == 'middle-center' -%}
       {%- if request.page_type == 'index' -%}
         <h1 class="header__heading">
       {%- endif -%}
-          <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
-            {%- if settings.logo != blank -%}
-              <div class="header__heading-logo-wrapper">
-                {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
-                {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
-                {% capture sizes %}(min-width: 750px) {{ settings.logo_width }}px, 50vw{% endcapture %}
-                {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
-                {{ settings.logo | image_url: width: 600 | image_tag:
-                  class: 'header__heading-logo',
-                  widths: widths,
-                  height: logo_height,
-                  width: settings.logo_width,
-                  alt: logo_alt,
-                  sizes: sizes,
-                  preload: true
-                }}
-              </div>
-            {%- else -%}
-              <span class="h2">{{ shop.name }}</span>
-            {%- endif -%}
-          </a>
+      <a href="{{ routes.root_url }}" class="header__heading-link link link--text focus-inset">
+        {%- if settings.logo != blank -%}
+          <div class="header__heading-logo-wrapper">
+            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+            {%- assign logo_height = settings.logo_width | divided_by: settings.logo.aspect_ratio -%}
+            {% capture sizes %}(min-width: 750px) {{ settings.logo_width }}px, 50vw{% endcapture %}
+            {% capture widths %}{{ settings.logo_width }}, {{ settings.logo_width | times: 1.5 | round }}, {{ settings.logo_width | times: 2 }}{% endcapture %}
+            {{
+              settings.logo
+              | image_url: width: 600
+              | image_tag:
+                class: 'header__heading-logo',
+                widths: widths,
+                height: logo_height,
+                width: settings.logo_width,
+                alt: logo_alt,
+                sizes: sizes,
+                preload: true
+            }}
+          </div>
+        {%- else -%}
+          <span class="h2">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
       {%- if request.page_type == 'index' -%}
         </h1>
       {%- endif -%}
@@ -211,34 +443,21 @@
     <div class="header__icons{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header__icons--localization header-localization{% endif %}">
       <div class="desktop-localization-wrapper">
         {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
-          <localization-form class="small-hide medium-hide" data-prevent-hide>
-            {%- form 'localization', id: 'HeaderCountryForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="visually-hidden" id="HeaderCountryLabel">{{ 'localization.country_label' | t }}</h2>
-                {%- render 'country-localization', localPosition: 'HeaderCountry' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {% endif %}
-
+          {%- render 'country-localization', localPosition: 'HeaderCountry' -%}
+        {%- endif -%}
         {%- if section.settings.enable_language_selector and localization.available_languages.size > 1 -%}
-          <localization-form class="small-hide medium-hide" data-prevent-hide>
-            {%- form 'localization', id: 'HeaderLanguageForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="visually-hidden" id="HeaderLanguageLabel">{{ 'localization.language_label' | t }}</h2>
-                {%- render 'language-localization', localPosition: 'HeaderLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
+          {%- render 'language-localization', localPosition: 'HeaderLanguage' -%}
         {%- endif -%}
       </div>
-      {% render 'header-search', input_id: 'Search-In-Modal' %}
+
+      <!-- Removed old {% render 'header-search' %} modal trigger -->
 
       {%- if shop.customer_accounts_enabled -%}
         <a
           href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
           class="header__icon header__icon--account link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}"
           rel="nofollow"
+          title="My Account"
         >
           {%- if section.settings.enable_customer_avatar -%}
             <account-icon>
@@ -270,12 +489,17 @@
         {%- endcase -%}
       {%- endfor -%}
 
-      <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-          {% if cart == empty %}
-            <span class="svg-wrapper">{{'icon-cart-empty.svg' | inline_asset_content }}</span>
-          {% else %}
-            <span class="svg-wrapper">{{'icon-cart.svg' | inline_asset_content }}</span>
-          {% endif %}
+      <a
+        href="{{ routes.cart_url }}"
+        class="header__icon header__icon--cart link focus-inset"
+        id="cart-icon-bubble"
+        title="Shopping Cart"
+      >
+        {% if cart == empty %}
+          <span class="svg-wrapper">{{ 'icon-cart-empty.svg' | inline_asset_content }}</span>
+        {% else %}
+          <span class="svg-wrapper">{{ 'icon-cart.svg' | inline_asset_content }}</span>
+        {% endif %}
         <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
         {%- if cart != empty -%}
           <div class="cart-count-bubble">
@@ -290,8 +514,11 @@
   </header>
 </{{ header_tag }}>
 
-{%- if settings.cart_type == "notification" -%}
-  {%- render 'cart-notification', color_scheme: section.settings.color_scheme, desktop_menu_type: section.settings.menu_type_desktop -%}
+{%- if settings.cart_type == 'notification' -%}
+  {%- render 'cart-notification',
+    color_scheme: section.settings.color_scheme,
+    desktop_menu_type: section.settings.menu_type_desktop
+  -%}
 {%- endif -%}
 
 {% javascript %}
@@ -302,7 +529,9 @@
 
     connectedCallback() {
       this.header = document.querySelector('.section-header');
-      this.headerIsAlwaysSticky = this.getAttribute('data-sticky-type') === 'always' || this.getAttribute('data-sticky-type') === 'reduce-logo-size';
+      this.headerIsAlwaysSticky =
+        this.getAttribute('data-sticky-type') === 'always' ||
+        this.getAttribute('data-sticky-type') === 'reduce-logo-size';
       this.headerBounds = {};
 
       this.setHeaderHeight();
@@ -311,14 +540,14 @@
 
       if (this.headerIsAlwaysSticky) {
         this.header.classList.add('shopify-section-header-sticky');
-      };
+      }
 
       this.currentScrollTop = 0;
       this.preventReveal = false;
       this.predictiveSearch = this.querySelector('predictive-search');
 
       this.onScrollHandler = this.onScroll.bind(this);
-      this.hideHeaderOnScrollUp = () => this.preventReveal = true;
+      this.hideHeaderOnScrollUp = () => (this.preventReveal = true);
 
       this.addEventListener('preventHeaderReveal', this.hideHeaderOnScrollUp);
       window.addEventListener('scroll', this.onScrollHandler, false);
@@ -394,7 +623,7 @@
 
     closeMenuDisclosure() {
       this.disclosures = this.disclosures || this.header.querySelectorAll('header-menu');
-      this.disclosures.forEach(disclosure => disclosure.close());
+      this.disclosures.forEach((disclosure) => disclosure.close());
     }
 
     closeSearchModal() {
@@ -404,6 +633,83 @@
   }
 
   customElements.define('sticky-header', StickyHeader);
+
+  /* Mobile search toggle: show inline search overlay on small screens and focus input */
+  (function () {
+    function isMobile() {
+      return window.matchMedia('(max-width: 749px)').matches;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const header = document.querySelector('.header');
+      if (!header) return;
+
+      const searchIcon = header.querySelector('.header__search-icon');
+      const searchForm = header.querySelector('.header__search-form');
+      const searchInput = searchForm?.querySelector('input[type="search"]');
+      const predictive = header.querySelector('predictive-search');
+
+      if (!searchIcon || !searchForm || !searchInput) return;
+
+      let onDocClick;
+
+      function openSearch() {
+        header.classList.add('search-active');
+        // If predictive-search is present, prefer opening it
+        try {
+          predictive?.open?.();
+        } catch (e) {
+          /* ignore */
+        }
+        // Focus with slight delay to ensure visibility
+        setTimeout(() => searchInput.focus(), 50);
+
+        // Close when clicking outside the search area
+        onDocClick = function (event) {
+          if (!header.querySelector('.header__search').contains(event.target)) {
+            closeSearch();
+          }
+        };
+        document.addEventListener('click', onDocClick);
+        document.addEventListener('keydown', onKeyDown);
+      }
+
+      function closeSearch() {
+        header.classList.remove('search-active');
+        document.removeEventListener('click', onDocClick);
+        document.removeEventListener('keydown', onKeyDown);
+        // If predictive-search is present, close its results
+        try {
+          predictive?.close?.(false);
+        } catch (e) {
+          /* ignore */
+        }
+      }
+
+      function onKeyDown(e) {
+        if (e.key === 'Escape') {
+          closeSearch();
+        }
+      }
+
+      searchIcon.addEventListener('click', function (e) {
+        // Mobile: toggle overlay. Desktop: just focus input.
+        if (isMobile()) {
+          e.preventDefault();
+          header.classList.contains('search-active') ? closeSearch() : openSearch();
+        } else {
+          searchInput.focus();
+        }
+      });
+
+      // If user resizes to desktop while overlay open, ensure it closes
+      window.addEventListener('resize', function () {
+        if (!isMobile() && header.classList.contains('search-active')) {
+          closeSearch();
+        }
+      });
+    });
+  })();
 {% endjavascript %}
 
 <script type="application/ld+json">
@@ -430,7 +736,7 @@
 </script>
 
 {%- if request.page_type == 'index' -%}
-  {% assign potential_action_target = request.origin | append: routes.search_url | append: "?q={search_term_string}" %}
+  {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
   <script type="application/ld+json">
     {
       "@context": "http://schema.org",
@@ -492,7 +798,7 @@
       ],
       "default": "center",
       "label": "t:sections.header.settings.mobile_logo_position.label"
-    },    
+    },
     {
       "type": "link_list",
       "id": "menu",
@@ -574,14 +880,14 @@
       "id": "enable_country_selector",
       "default": true,
       "label": "t:sections.header.settings.enable_country_selector.label",
-      "info":"t:sections.header.settings.enable_country_selector.info"
+      "info": "t:sections.header.settings.enable_country_selector.info"
     },
     {
       "type": "checkbox",
       "id": "enable_language_selector",
       "default": true,
       "label": "t:sections.header.settings.enable_language_selector.label",
-      "info":"t:sections.header.settings.enable_language_selector.info"
+      "info": "t:sections.header.settings.enable_language_selector.info"
     },
     {
       "type": "checkbox",

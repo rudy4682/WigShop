@@ -37,7 +37,9 @@
     },
     "search": {
       "search": "Search",
-      "reset": "Clear search term"
+      "reset": "Clear search term",
+    "search_for": "Search for “{{ terms }}”",
+    "submit": "Search"
     },
     "cart": {
       "view": "View cart ({{ count }})",
@@ -82,6 +84,7 @@
   },
   "blogs": {
     "article": {
+    "articles": "Articles",
       "blog": "Blog",
       "read_more_title": "Read more: {{ title }}",
       "comments": {
@@ -109,6 +112,7 @@
       "add_to_cart": "Add to cart",
       "choose_options": "Choose options",
       "choose_product_options": "Choose options for {{ product_name }}",
+      "make_a_selection": "Make a selection",
       "description": "Description",
       "inventory_in_stock": "In stock",
       "inventory_in_stock_show_count": "{{ quantity }} in stock",
@@ -216,7 +220,7 @@
       "clear_filter": "Remove filter"
     }
   },
-  "templates": {
+   "templates": {
     "search": {
       "no_results": "No results found for “{{ terms }}”. Check the spelling or use a different word or phrase.",
       "page": "Page",
@@ -244,8 +248,10 @@
       "title": "Search results",
       "search_for": "Search for “{{ terms }}”",
       "suggestions": "Suggestions",
-      "pages": "Pages"
+      "pages": "Pages",
+      "view_all": "View all results"
     },
+
     "cart": {
       "cart": "Cart"
     },
@@ -330,7 +336,7 @@
     "collection_list": {
       "view_all": "View all"
     },
-    "collection_template": {
+       "collection_template": {
       "empty": "No products found",
       "title": "Collection",
       "use_fewer_filters_html": "Use fewer filters or <a class=\"{{ class }}\" href=\"{{ link }}\">remove all</a>"
@@ -338,6 +344,7 @@
     "video": {
       "load_video": "Load video: {{ description }}"
     },
+
     "slideshow": {
       "load_slide": "Load slide",
       "previous_slideshow": "Previous slide",
@@ -374,12 +381,30 @@
       "min_error": "This item has a minimum of {{ min }}",
       "max_error": "This item has a maximum of {{ max }}",
       "step_error": "You can only add this item in increments of {{ step }}"
+    },
+    "main-product": {
+      "blocks": {
+        "variant_picker": {
+          "settings": {
+            "enable_dual_selector": {
+              "label": "Enable dual selector"
+            }
+          }
+        }
+      }
     }
   },
   "localization": {
     "country_label": "Country/region",
     "language_label": "Language",
     "update_language": "Update language",
+    "privacy": {
+      "consent": {
+        "heading": "Cookie preferences",
+        "legend": "Cookie categories",
+        "reject": "Reject all"
+      }
+    },
     "update_country": "Update country/region",
     "search": "Search",
     "popular_countries_regions": "Popular countries/regions",
@@ -527,5 +552,24 @@
       "send_on": "YYYY-MM-DD",
       "send_on_label": "Send on (optional)"
     }
+  },
+    "privacy": {
+    "consent": {
+      "message": "We use cookies and analytics to improve your experience.",
+      "necessary": "Necessary cookies",
+      "analytics": "Analytics",
+      "marketing": "Marketing",
+      "heading": "Cookie preferences",
+      "legend": "Cookie categories",
+      "reject": "Reject all",
+      "accept": "Save preferences",
+      "privacy_link": "Privacy Policy",
+      "cookie_link": "Cookie Policy"
+    }
+  },
+      "collections": {
+      "general": {
+        "title": "Collections"
+      }
+    }
   }
-}

@@ -1,0 +1,64 @@
+{% comment %}
+  AUDIT HEADER — WigShop v1.0
+  File: snippets/variant-swatches.liquid
+  Purpose: Renders variant picker as swatches with WigShop data attributes
+  Trigger: Used when block.settings.picker_type == 'button'
+  Dependencies: product object, block.settings.swatch_shape
+  Notes:
+    - Adds swatch-out, swatch-very-low, swatch-low classes based on inventory
+    - Publishes optionValueSelectionChange for product-info.js
+    - Bound to product form for submission
+{% endcomment %}
+
+{% assign swatch_shape = block.settings.swatch_shape | default: 'circle' %}
+
+<div class="variant-picker variant-picker--swatches variant-picker--{{ swatch_shape }}">
+  {% for variant in product.variants %}
+    {% assign qty = variant.inventory_quantity | default: 0 %}
+    {% assign swatch_class = '' %}
+    {% if qty == 0 %}
+      {% assign swatch_class = 'swatch-out' %}
+    {% elsif qty <= settings.stock_very_low_threshold %}
+      {% assign swatch_class = 'swatch-very-low' %}
+    {% elsif qty <= settings.stock_low_threshold %}
+      {% assign swatch_class = 'swatch-low' %}
+    {% endif %}
+
+    <label class="swatch swatch--{{ swatch_shape }} {{ swatch_class }}">
+      <input
+        type="radio"
+        name="id"
+        value="{{ variant.id }}"
+        form="{{ product_form_id }}"
+        data-variant-swatch
+        data-variant-id="{{ variant.id }}"
+        data-option-values="{{ variant.options | join: ',' }}"
+        data-inventory-quantity="{{ variant.inventory_quantity }}"
+        data-price="{{ variant.price | divided_by: 100.0 }}"
+        data-compare-at="{{ variant.compare_at_price | divided_by: 100.0 }}"
+        data-image="{{ variant.featured_media | image_url: width: 600, height: 600 }}"
+      >
+      {% render 'swatch', variant: variant, shape: swatch_shape %}
+    </label>
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const inputs = document.querySelectorAll('[data-variant-swatch][form="{{ product_form_id }}"]');
+    inputs.forEach((input) => {
+      input.addEventListener('change', function () {
+        const selectedOptionValues = (this.dataset.optionValues || '').split(',').filter((v) => v !== '');
+        if (window.publish && window.PUB_SUB_EVENTS) {
+          window.publish(window.PUB_SUB_EVENTS.optionValueSelectionChange, {
+            data: {
+              event: new Event('change'),
+              target: this,
+              selectedOptionValues,
+            },
+          });
+        }
+      });
+    });
+  });
+</script>
