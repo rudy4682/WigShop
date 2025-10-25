@@ -10,7 +10,11 @@
 {%- endcomment -%}
 
 {%- if template.name contains 'product' -%}
-  {%- assign v = product.selected_or_first_available_variant -%}
+  {%- comment -%} Prefer explicit variant from URL when present {%- endcomment -%}
+  {%- if request.params.id != blank -%}
+    {%- assign selected_variant = product.variants | where: 'id', request.params.id | first -%}
+  {%- endif -%}
+  {%- assign v = selected_variant | default: product.selected_or_first_available_variant -%}
   {%- assign lowest_price = product.variants | map: 'price' | sort | first -%}
   {%- assign highest_price = product.variants | map: 'price' | sort | last -%}
   <script type="application/ld+json">
@@ -27,9 +31,13 @@
         "name": {{ product.vendor | json }}
       },
       "image": [
-        {{ product.featured_media | image_url: width: 1200 | prepend: "https:" | json }}
-        {%- if v.featured_media and v.featured_media.id != product.featured_media.id -%}
-          , {{ v.featured_media | image_url: width: 1200 | prepend: "https:" | json }}
+        {%- if v.featured_media -%}
+          {{ v.featured_media | image_url: width: 1200 | prepend: "https:" | json }}
+          {%- if product.featured_media and product.featured_media.id != v.featured_media.id -%}
+            , {{ product.featured_media | image_url: width: 1200 | prepend: "https:" | json }}
+          {%- endif -%}
+        {%- else -%}
+          {{ product.featured_media | image_url: width: 1200 | prepend: "https:" | json }}
         {%- endif -%}
       ],
       "offers": {

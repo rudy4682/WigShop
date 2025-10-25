@@ -83,3 +83,18 @@
 {%- if settings.social_twitter_link != blank -%}
   <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">
 {%- endif -%}
+
+{%- comment -%} canonical — always product root URL {%- endcomment -%}
+<link rel="canonical" href="{{ product.url | prepend: shop.url }}">
+
+{%- comment -%} og:image — prefer variant featured image when URL contains id param {%- endcomment -%}
+{%- assign og_image = product.featured_image -%}
+{%- if request.params.id != blank -%}
+  {%- assign selected_variant = product.variants | where: 'id', request.params.id | first -%}
+  {%- if selected_variant and selected_variant.featured_media != null -%}
+    {%- assign og_image = selected_variant.featured_media.preview_image -%}
+  {%- endif -%}
+{%- endif -%}
+
+<meta property="og:image" content="{{ og_image.src | img_url: '1200x630' | prepend: shop.secure_url }}">
+<meta property="og:image:alt" content="{{ og_image.alt | default: product.title }}">

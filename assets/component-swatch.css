@@ -105,4 +105,27 @@
   grid-template-columns: repeat(auto-fill, minmax(var(--swatch--size, 3.6rem), 1fr));
   gap: 0.6rem;
   align-items: start;
+  justify-content: center; /* center the grid like wigs.com */
+  grid-auto-flow: row; /* allow wrapping rows centered */
 }
+
+/* availability states */
+.swatch--low { border: 0.16rem solid #f1c40f; }        /* yellow */
+.swatch--very-low { border: 0.2rem solid #f39c12; }    /* orange */
+.swatch--unavailable { opacity: 0.45; filter: grayscale(60%); }
+
+/* diagonal line for unavailable */
+.swatch-diagonal {
+  position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(135deg, rgba(255,0,0,0.75) 0 40%, transparent 40% 60%, rgba(255,0,0,0.75) 60% 100%);
+  mix-blend-mode: multiply;
+}
+
+/* tooltip */
+.swatch-tooltip { position:absolute; left:50%; transform:translateX(-50%); bottom:-2.25rem; background:var(--color-foreground); color:var(--color-background); padding:0.25rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; white-space:nowrap; opacity:0; transition:opacity .12s, bottom .12s; pointer-events:none; }
+.swatch:hover .swatch-tooltip,
+.swatch:focus-within .swatch-tooltip,
+.swatch--tapped .swatch-tooltip { opacity:1; bottom: calc(100% + 0.5rem); pointer-events:auto; }
+
+/* out of stock textual strike (for dropdown label styles or inline display) */
+.availability.out { text-decoration: line-through; color: #999; }

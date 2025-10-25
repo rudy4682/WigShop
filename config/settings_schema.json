@@ -890,12 +890,36 @@
     ]
   },
   {
-  "name": "Swatch Settings",
+  "name": "Speed & Inventory",
   "settings": [
+    {
+      "type": "number",
+      "id": "stock_low_threshold",
+      "label": "Low stock threshold (qty ≤)",
+      "default": 9,
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "type": "number",
+      "id": "stock_very_low_threshold",
+      "label": "Very low stock threshold (qty ≤)",
+      "default": 3,
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "type": "number",
+      "id": "sale_badge_threshold",
+      "label": "Sale badge minimum % off",
+      "default": 16,
+      "min": 0,
+      "max": 100
+    },
     {
       "type": "checkbox",
       "id": "enable_dual_selector",
-      "label": "Enable Dual Selector (Swatches + Dropdown)",
+      "label": "Enable dual swatch + dropdown selector",
       "default": true
     }
   ]

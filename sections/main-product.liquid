@@ -51,6 +51,7 @@
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'pickup-badge.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -204,6 +205,8 @@
                       <span class="availability out">{{ 'products.product.inventory_out_of_stock' | t }}</span>
                     {%- endif -%}
                   </p>
+                  {%- comment -%} Pickup badge (geolocation & metafield driven) {%- endcomment -%}
+                  {% render 'pickup-badge', product: product, variant: v %}
                 {%- endif -%}
 
                 {% comment %} End WigShop v1.0 Availability patch {% endcomment %}

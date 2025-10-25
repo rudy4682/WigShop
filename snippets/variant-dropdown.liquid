@@ -10,26 +10,40 @@
 
 <select
   id="VariantDropdown-{{ section.id }}"
-  class="variant-dropdown"
   name="id"
-  form="{{ product_form_id }}"
   data-product-url="{{ product.url }}"
+  aria-label="{{ 'products.product.variant_label' | t }}"
 >
-  <option value="">{{ 'products.product.make_a_selection' | t }}</option>
-  {% for variant in product.variants %}
+  <option value="">{{ 'products.product.make_selection' | t | default: 'Make a selection' }}</option>
+
+  {%- for v in product.variants -%}
+    {%- assign qty = v.inventory_quantity | default: 0 -%}
+    {%- assign low_limit = settings.stock_low_threshold | default: 9 -%}
+    {%- assign very_low_limit = settings.stock_very_low_threshold | default: 3 -%}
+    {%- assign suffix = '' -%}
+    {%- if v.available == false -%}
+      {%- assign disabled_attr = 'disabled' -%}
+      {%- assign suffix = ' - ' | append: ( 'products.product.unavailable' | t | default: 'Unavailable' ) -%}
+    {%- else -%}
+      {%- assign disabled_attr = '' -%}
+      {%- if qty <= very_low_limit and qty > 0 -%}
+        {%- assign suffix = ' - ' | append: ( 'products.product.very_low' | t | default: 'Very Low' ) -%}
+      {%- elsif qty <= low_limit and qty > 0 -%}
+        {%- assign suffix = ' - ' | append: ( 'products.product.low_stock' | t | default: 'Low Stock' ) -%}
+      {%- endif -%}
+    {%- endif -%}
+
     <option
-      value="{{ variant.id }}"
-      data-variant-id="{{ variant.id }}"
-      data-option-values="{{ variant.options | join: ',' }}"
-      data-inventory-quantity="{{ variant.inventory_quantity }}"
-      data-price="{{ variant.price | divided_by: 100.0 }}"
-      data-compare-at="{{ variant.compare_at_price | divided_by: 100.0 }}"
-      data-image="{{ variant.featured_media | image_url: width: 600, height: 600 }}"
-      {% unless variant.available %}disabled{% endunless %}
+      value="{{ v.id }}"
+      data-price="{{ v.price }}"
+      data-compare="{{ v.compare_at_price }}"
+      data-qty="{{ qty }}"
+      {{ disabled_attr }}
     >
-      {{ variant.title }} — {{ variant.price | money }}
+      {{ v.title -}}
+      {{- suffix }}
     </option>
-  {% endfor %}
+  {%- endfor -%}
 </select>
 
 <script>
@@ -39,17 +53,15 @@
 
     select.addEventListener('change', function () {
       const opt = select.options[select.selectedIndex];
-      const selectedOptionValues = (opt?.dataset.optionValues || '')
-        .split(',')
-        .filter(v => v !== '');
+      const selectedOptionValues = (opt?.dataset.optionValues || '').split(',').filter((v) => v !== '');
 
       if (window.publish && window.PUB_SUB_EVENTS) {
         window.publish(window.PUB_SUB_EVENTS.optionValueSelectionChange, {
           data: {
             event: new Event('change'),
             target: select,
-            selectedOptionValues
-          }
+            selectedOptionValues,
+          },
         });
       }
     });

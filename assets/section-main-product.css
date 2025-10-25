@@ -1297,6 +1297,14 @@ a.product__text {
   max-width: calc(100% - calc(var(--media-border-width) * 2));
 }
 
+/* Caption beneath product media */
+.product-media-caption {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--color-foreground, #222);
+  text-align: center;
+}
+
 .product-media-container.constrain-height {
   /* arbitrary offset value based on average theme spacing and header height */
   --viewport-offset: 400px;

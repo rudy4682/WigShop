@@ -1,0 +1,28 @@
+{%- comment -%}
+  Pickup badge snippet
+  - Reads product metafield for shipping/pickup info (supports multiple keys)
+  - Outputs a placeholder element with data attributes for client-side geolocation logic
+  Expected metafields (optional, examples):
+    product.metafields.shipping.ship_days
+    product.metafields.custom.ship_days
+    shop.metafields.store.pickup_coords ("lat,long")
+  This snippet itself does not request geolocation; the client JS will request permission and update the badge.
+{%- endcomment -%}
+
+{%- assign ship_days = product.metafields.shipping.ship_days
+  | default: product.metafields.custom.ship_days
+  | default: ''
+-%}
+{%- assign store_coords = shop.metafields.store.pickup_coords | default: '' -%}
+
+<div
+  class="product-pickup-badge js-pickup-badge"
+  data-ship-days="{{ ship_days }}"
+  data-store-coords="{{ store_coords }}"
+  data-cutoff="15:30"
+  data-timezone="America/Chicago"
+  aria-live="polite"
+>
+  <!-- content injected by assets/pickup-badge.js -->
+  <span class="visually-hidden">Pickup availability</span>
+</div>
