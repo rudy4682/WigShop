@@ -96,5 +96,5 @@
   {%- endif -%}
 {%- endif -%}
 
-<meta property="og:image" content="{{ og_image.src | img_url: '1200x630' | prepend: shop.secure_url }}">
-<meta property="og:image:alt" content="{{ og_image.alt | default: product.title }}">
+<meta property="og:image" content="{{ og_image | image_url: width: 1200, height: 630 | prepend: shop.secure_url }}">
+<meta property="og:image:alt" content="{{ og_image.alt | default: product.title | escape }}">

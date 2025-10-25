@@ -12,9 +12,9 @@
   id="VariantDropdown-{{ section.id }}"
   name="id"
   data-product-url="{{ product.url }}"
-  aria-label="{{ 'products.product.variant_label' | t }}"
+  aria-label="{{ 'products.product.product_variants' | t }}"
 >
-  <option value="">{{ 'products.product.make_selection' | t | default: 'Make a selection' }}</option>
+  <option value="">{{ 'products.product.make_a_selection' | t | default: 'Make a selection' }}</option>
 
   {%- for v in product.variants -%}
     {%- assign qty = v.inventory_quantity | default: 0 -%}
