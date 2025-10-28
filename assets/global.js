@@ -1323,7 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   productForms.forEach((form) => {
     const addToCartBtn = form.querySelector('[type="submit"]');
-    const dropdown = form.querySelector('select[data-variant-select]');
+    const dropdown = form.querySelector('select[data-variant-select]') || form.querySelector('select[name="id"]');
     const swatches = form.querySelectorAll('[data-variant-swatch]');
     const priceWrapper = form.querySelector('[data-price-wrapper]');
     const saleBadge = form.querySelector('[data-sale-badge]');
@@ -1374,19 +1374,111 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dropdown) {
       dropdown.addEventListener('change', (e) => {
         const variantId = e.target.value;
-        // Sync swatch
+
+        // Sync swatch visually (don't trigger swatch change handlers to avoid loops)
         swatches.forEach((sw) => {
           sw.checked = sw.value === variantId;
         });
+
+        // Run local UI updates (price, availability, SEO)
         handleSelection(variantId);
+
+        // Publish a centralized selection change so other components (product-info, price-per-item, etc.)
+        // can respond the same way they do when swatches are clicked.
+        try {
+          const opt = dropdown.options[dropdown.selectedIndex];
+          const selectedOptionValues = (opt?.dataset.optionValues || '').split(',').filter((v) => v !== '');
+
+          if (window.publish && window.PUB_SUB_EVENTS) {
+            publish(PUB_SUB_EVENTS.optionValueSelectionChange, {
+              data: {
+                event: e,
+                target: dropdown,
+                selectedOptionValues,
+              },
+            });
+          }
+
+          // Also dispatch a DOM CustomEvent for any listeners expecting it (parity with swatch handler)
+          try {
+            document.dispatchEvent(
+              new CustomEvent('optionValueSelectionChange', {
+                detail: { target: dropdown, selectedOptionValues, variantId },
+              })
+            );
+          } catch (err) {
+            /* ignore */
+          }
+
+          // Update URL to include ?variant=<id> (preserve other params)
+          try {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            if (variantId) params.set('variant', variantId);
+            else params.delete('variant');
+            const newSearch = params.toString();
+            const newUrl = `${url.pathname}${newSearch ? `?${newSearch}` : ''}${url.hash}`;
+            window.history.replaceState({}, '', newUrl);
+          } catch (err) {
+            /* ignore url errors */
+          }
+        } catch (err) {
+          /* swallow publishing errors */
+        }
       });
     }
 
     // Swatch change
     swatches.forEach((sw) => {
       sw.addEventListener('change', (e) => {
-        if (dropdown) dropdown.value = e.target.value;
-        handleSelection(e.target.value);
+        const variantId = e.target.value;
+
+        // Keep native dropdown in sync visually (don't dispatch its change to avoid loops)
+        if (dropdown) dropdown.value = variantId;
+
+        // Run local UI updates
+        handleSelection(variantId);
+
+        // Publish centralized selection change for other components
+        try {
+          const selectedOptionValues = (e.target.dataset.optionValues || '').split(',').filter((v) => v !== '');
+
+          if (window.publish && window.PUB_SUB_EVENTS) {
+            publish(PUB_SUB_EVENTS.optionValueSelectionChange, {
+              data: {
+                event: e,
+                target: e.target,
+                selectedOptionValues,
+              },
+            });
+          }
+
+          // Also dispatch a DOM CustomEvent for parity with dropdown handler
+          try {
+            document.dispatchEvent(
+              new CustomEvent('optionValueSelectionChange', {
+                detail: { target: e.target, selectedOptionValues, variantId },
+              })
+            );
+          } catch (err) {
+            /* ignore */
+          }
+
+          // Update URL to include ?variant=<id>
+          try {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            if (variantId) params.set('variant', variantId);
+            else params.delete('variant');
+            const newSearch = params.toString();
+            const newUrl = `${url.pathname}${newSearch ? `?${newSearch}` : ''}${url.hash}`;
+            window.history.replaceState({}, '', newUrl);
+          } catch (err) {
+            /* ignore */
+          }
+        } catch (err) {
+          /* swallow publishing errors */
+        }
       });
     });
 

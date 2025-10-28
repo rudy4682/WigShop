@@ -2,17 +2,43 @@
    SEARCH BAR STYLING
    =========================== */
 
+.header__search-form {
+  position: relative;
+  width: 100%;
+}
+
 .search__input.field__input {
-  padding-right: 9.8rem;
-  border-radius: 6px 0 0 6px;
-  /* rounded left corners */
+  padding-right: 5rem; /* Space for search icon on right */
+  padding-left: 1.5rem; /* Align text to left */
+  border-radius: 25px; /* Fully rounded left and right */
+  text-align: left;
+  width: 100%;
 }
 
 .search__button {
+  position: absolute;
   right: var(--inputs-border-width);
   top: var(--inputs-border-width);
-  border-radius: 0 6px 6px 0;
-  /* rounded right corners */
+  border-radius: 0 25px 25px 0; /* Match input right side rounding */
+  background: transparent;
+  border: none;
+  width: 4.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search__button .svg-wrapper {
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search__button .icon {
+  width: 100%;
+  height: 100%;
 }
 
 .reset__button {
@@ -160,22 +186,24 @@ input::-webkit-search-decoration {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    max-width: 400px;
-    width: 100%;
+    /* Use viewport-relative width so the search takes at least ~60% of the screen */
+    width: 60vw;
+    max-width: 1000px; /* cap the width on very large screens */
+    min-width: 40rem; /* ensure a comfortable minimum (approx 640px) */
   }
 
   .header__search-form input[type="search"] {
     flex: 1;
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px 0 0 6px;
+    padding: 0.75rem 1.75rem; /* increased horizontal padding for wider appearance */
+    border: 3px solid var(--color-border, #bfbfbf); /* increased border thickness for visibility */
+    border-radius: 999px 0 0 999px; /* pill-like left rounded */
   }
 
   .header__search-form button {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
+    padding: 0.75rem 1.25rem; /* slightly larger tappable area */
+    border: 3px solid var(--color-border, #bfbfbf); /* match increased border */
     border-left: none;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 999px 999px 0; /* pill-like right rounded */
     background: #000;
     color: #fff;
     cursor: pointer;

@@ -45,7 +45,10 @@
   endif
 -%}
 
-{%- assign qty = variant.inventory_quantity | default: 0 -%}
+{%- assign qty = 0 -%}
+{%- if variant -%}
+  {%- assign qty = variant.inventory_quantity | default: 0 -%}
+{%- endif -%}
 {%- assign low_limit = settings.stock_low_threshold | default: 9 -%}
 {%- assign very_low_limit = settings.stock_very_low_threshold | default: 3 -%}
 {%- assign availability_class = 'available' -%}
@@ -58,8 +61,12 @@
 {%- endif -%}
 
 <span
-  class="swatch swatch--{{ shape }} swatch--{{ availability_class }}"
+  class="swatch swatch--{{ swatch_shape }} swatch--{{ availability_class }}"
   title="{{ swatch_title | escape }}"
+  style="{{ swatch_style }}"
+  {%- if swatch_focal_point != null -%}
+    data-focal-point="{{ swatch_focal_point.x }},{{ swatch_focal_point.y }}"
+  {%- endif -%}
 >
   <span class="visually-hidden">{{ swatch_title }}</span>
   <span class="swatch-tooltip" aria-hidden="true">{{ swatch_title }}</span>

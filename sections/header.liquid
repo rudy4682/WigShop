@@ -123,135 +123,33 @@
     .header * > .header__search { display: inline-flex !important; }
   }
 
-  /* Desktop/tablet layout: place logo top-left and search top-center for the
-     'top-left' header variant. This overrides the theme's default grid area
-     assignments without editing global `base.css`. */
+  /* Center the header search on wide screens for specific header layouts.
+     This only applies to header variants that don't conflict with logo positioning. */
   @media screen and (min-width: 990px) {
-    .header--top-left .header__heading,
-    .header--top-left .header__heading-link {
-      /* move the heading (logo) into the left column */
-      grid-area: left-icons;
-      justify-self: start;
-      align-self: center;
-    }
-
-    .header--top-left > .header__search,
-    .header--top-left * > .header__search {
-      /* place the search in the center heading area */
-      grid-area: heading;
-      justify-self: center;
+    /* Only center search for middle-center and top-center layouts */
+    .header--middle-center .header__search,
+    .header--top-center .header__search {
+      position: absolute !important;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0.6rem;
+      z-index: 1100;
       display: inline-flex !important;
       align-items: center;
+      justify-content: center;
     }
 
-    .header--top-left .header__icons {
-      grid-area: icons;
-      justify-self: end;
+    /* For top-left and middle-left, keep search in grid flow */
+    .header--top-left .header__search,
+    .header--middle-left .header__search {
+      position: relative;
+      transform: none;
+      grid-area: heading;
+      justify-self: center;
     }
-  }
 
-  /* Mobile overlay state when user taps the search icon */
-  .header.search-active .header__search-form {
-    display: inline-flex !important;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: var(--header-height, 0);
-    padding: 1rem;
-    background: rgb(var(--color-background));
-    z-index: 1200;
-    box-shadow: 0 0.6rem 1.2rem rgba(var(--color-foreground), 0.06);
-    align-items: center;
-  }
-
-  .header.search-active .header__search-icon { display: none !important; }
-
-  {%- if section.settings.sticky_header_type == 'reduce-logo-size' -%}
-    .scrolled-past-header .header__heading-logo-wrapper {
-      width: 75%;
-    }
-  {%- endif -%}
-
-  {%- if section.settings.menu_type_desktop != "drawer" -%}
-    @media screen and (min-width: 990px) {
-      header-drawer {
-        display: none;
-      }
-    }
-  {%- endif -%}
-
-  .menu-drawer-container {
-    display: flex;
-  }
-
-  .list-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .list-menu--inline {
-    display: inline-flex;
-    flex-wrap: wrap;
-  }
-
-  summary.list-menu__item {
-    padding-right: 2.7rem;
-  }
-
-  .list-menu__item {
-    display: flex;
-    align-items: center;
-    line-height: calc(1 + 0.3 / var(--font-body-scale));
-  }
-
-  .list-menu__item--link {
-    text-decoration: none;
-    padding-bottom: 1rem;
-    padding-top: 1rem;
-    line-height: calc(1 + 0.8 / var(--font-body-scale));
-  }
-
-  @media screen and (min-width: 750px) {
-    .list-menu__item--link {
-      padding-bottom: 0.5rem;
-      padding-top: 0.5rem;
-    }
-  }
-
-  /* Ensure the header search is visible on tablet & desktop and compact on mobile.
-     - Desktop / Tablet (>= 750px): show full search form, hide icon button.
-     - Mobile (< 750px): hide full search form, show only the icon trigger.
-     This block intentionally uses specific selectors and media queries to
-     override broader rules in base.css without changing global stylesheet. */
-  .header__search {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .header__search-form,
-  .header__search-form .search__input,
-  .header__search-form .search__button {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .header__search-icon {
-    display: none;
-  }
-
-  /* Mobile: collapse to icon only */
-  @media screen and (max-width: 749px) {
-    .header__search-form { display: none !important; } /* hide full form on mobile */
-    .header__search-icon { display: inline-flex !important; align-items: center; justify-content: center; }
-    .header__search { gap: 0; }
-  }
-
-  /* Tablet + Desktop: show full form, hide icon */
-  @media screen and (min-width: 750px) {
-    .header__search-form { display: inline-flex !important; }
-    .header__search-icon { display: none !important; }
+    /* Increase the max-width so the centered search is noticeably wider like wigs.com */
+    .header__search-form { max-width: 1000px; }
   }
 
   /* Mobile overlay state when user taps the search icon */
@@ -379,17 +277,17 @@
           type="search"
           name="q"
           value="{{ search.terms | escape }}"
-          placeholder="{{ 'general.search.search' | t }}"
-          aria-label="{{ 'general.search.search' | t }}"
+          placeholder="Search"
+          aria-label="Search"
           class="search__input field__input"
         >
-        <button type="submit" class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+        <button type="submit" class="search__button field__button" aria-label="Search">
           <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
         </button>
       </form>
 
       <!-- Mobile icon -->
-      <button class="header__search-icon" aria-label="Open search">
+      <button class="header__search-icon" aria-label="Search">
         <svg class="icon icon-search" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none">
           <circle cx="11" cy="11" r="8" stroke-width="2"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"></line>
@@ -450,7 +348,7 @@
         {%- endif -%}
       </div>
 
-      <!-- Removed old {% render 'header-search' %} modal trigger -->
+      {%- comment -%} Removed old render 'header-search' modal trigger {%- endcomment -%}
 
       {%- if shop.customer_accounts_enabled -%}
         <a

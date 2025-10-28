@@ -10,21 +10,22 @@
 
 /* Base swatch styles */
 .swatch {
-  --swatch--size: var(--swatch-input--size, 4.4rem);
-  --swatch--border-radius: var(--swatch-input--border-radius, 0.2rem);
-
   display: block;
-  width: var(--swatch--size);
-  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-width: 10rem;
+  max-height: 10rem;
   aspect-ratio: 1 / 1;
   background: var(--swatch--background);
   background-position: var(--swatch-focal-point, center);
   background-size: cover;
   background-origin: border-box;
-  border: 0.1rem solid rgba(var(--color-foreground), 0.15);
-  border-radius: var(--swatch--border-radius);
+  border: 0.12rem solid rgba(var(--color-foreground), 0.12);
+  border-radius: 0.4rem;
   cursor: pointer;
-  /* makes hover tooltips feel natural */
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  overflow: hidden; /* Prevent background images from overflowing bounds */
+  position: relative; /* Establish positioning context for pseudo-elements */
 }
 
 /* Explicit square swatches */
@@ -101,18 +102,144 @@
 
 /* Swatch list/grid layout similar to wigs.com: multi-row responsive grid */
 .variant-picker--swatches {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--swatch--size, 3.6rem), 1fr));
-  gap: 0.6rem;
-  align-items: start;
-  justify-content: center; /* center the grid like wigs.com */
-  grid-auto-flow: row; /* allow wrapping rows centered */
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, 8rem) !important;
+  gap: 1.2rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 1rem 0 !important;
+  justify-content: start !important;
+  background: transparent !important;
+}
+
+/* Size variants controlled by theme setting `settings.swatch_size` - wigs.com style larger swatches */
+.variant-picker--swatches.variant-picker--size-small {
+  grid-template-columns: repeat(auto-fill, 6rem) !important;
+  gap: 1rem !important;
+}
+
+.variant-picker--swatches.variant-picker--size-medium {
+  grid-template-columns: repeat(auto-fill, 8rem) !important;
+  gap: 1.2rem !important;
+}
+
+.variant-picker--swatches.variant-picker--size-large {
+  grid-template-columns: repeat(auto-fill, 10rem) !important;
+  gap: 1.5rem !important;
+}
+
+/* Responsive column caps: wigs.com shows ~5-6 swatches per row */
+@media screen and (min-width: 750px) {
+  /* On tablet+, maintain fixed grid item sizes */
+  .variant-picker--swatches.variant-picker--size-small {
+    grid-template-columns: repeat(auto-fill, 6rem) !important;
+  }
+
+  .variant-picker--swatches.variant-picker--size-medium {
+    grid-template-columns: repeat(auto-fill, 8rem) !important;
+  }
+
+  .variant-picker--swatches.variant-picker--size-large {
+    grid-template-columns: repeat(auto-fill, 10rem) !important;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  /* Desktop: maintain consistent sizing */
+  .variant-picker--swatches.variant-picker--size-small {
+    grid-template-columns: repeat(auto-fill, 6rem) !important;
+  }
+
+  .variant-picker--swatches.variant-picker--size-medium {
+    grid-template-columns: repeat(auto-fill, 8rem) !important;
+  }
+
+  .variant-picker--swatches.variant-picker--size-large {
+    grid-template-columns: repeat(auto-fill, 10rem) !important;
+  }
+}
+
+/* Swatch-item wrapper: stacks swatch + label vertically like wigs.com */
+.swatch-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-align: center !important;
+  max-width: 10rem !important;
+  width: auto !important;
+}
+
+/* Swatch label text styling - wigs.com style */
+.swatch-label {
+  display: block;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  color: rgba(var(--color-foreground), 0.75);
+  font-weight: 400;
+  width: 100%;
+  max-width: 10rem;
+  word-wrap: break-word;
+  hyphens: auto;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+/* Selected swatch gets bolder label and accent color */
+.swatch-item input[type="radio"]:checked ~ .swatch-label {
+  font-weight: 600;
+  color: rgb(var(--color-foreground));
+}
+
+/* Hide native radio visually but keep it accessible */
+.swatch-item input[type="radio"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Selected state styling for the swatch element */
+.swatch-item input[type="radio"]:checked ~ .swatch,
+.swatch-item input[type="radio"]:checked + label .swatch {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+  border: 0.3rem solid rgb(var(--color-button));
+}
+
+/* Focus state for accessibility */
+.swatch-item input[type="radio"]:focus ~ .swatch,
+.swatch-item input[type="radio"]:focus + label .swatch {
+  outline: 2px solid rgb(var(--color-button));
+  outline-offset: 2px;
+}
+
+/* Hover state */
+.swatch-item:hover .swatch {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* availability states */
-.swatch--low { border: 0.16rem solid #f1c40f; }        /* yellow */
-.swatch--very-low { border: 0.2rem solid #f39c12; }    /* orange */
-.swatch--unavailable { opacity: 0.45; filter: grayscale(60%); }
+.swatch--low {
+  border: 0.2rem solid #faff00; /* neon yellow */
+}
+
+.swatch--very-low {
+  border: 0.2rem solid #ff6f00; /* neon orange */
+}
+
+.swatch--unavailable {
+  opacity: 0.5;
+  filter: grayscale(80%);
+  cursor: not-allowed;
+}
 
 /* diagonal line for unavailable */
 .swatch-diagonal {

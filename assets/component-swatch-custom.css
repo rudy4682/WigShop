@@ -1,0 +1,207 @@
+/* AUDIT HEADER — WigShop v1.0
+   File: assets/component-swatch-custom.css
+   Purpose: Custom wigs.com-style clickable image swatches (no radio buttons)
+   Notes:
+     - Used by variant-swatches-custom.liquid
+     - 45px x 45px swatch size
+     - Solid red diagonal strike for unavailable items
+     - Grid layout with horizontal rows
+     - TODO: Color group filters (to be implemented with variant metafields)
+*/
+
+/* Dropdown select styling - visible above swatches */
+.variant-select-dropdown {
+  display: block !important;
+  visibility: visible !important;
+  width: 100%;
+  max-width: 30rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.2);
+  border-radius: 0.4rem;
+  font-size: 1.4rem;
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+}
+
+/* TODO: Color group filter tabs - uncomment when implementing with metafields
+.color-groups {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  flex-wrap: wrap;
+}
+
+.color-groups li {
+  margin: 0;
+}
+
+.color-groups a {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  background: rgb(var(--color-background));
+  border: 0.1rem solid rgba(var(--color-foreground), 0.2);
+  border-radius: 0.4rem;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.color-groups a:hover {
+  background: rgba(var(--color-foreground), 0.05);
+  border-color: rgba(var(--color-foreground), 0.3);
+}
+
+.color-groups a.active {
+  background: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  border-color: rgb(var(--color-button));
+}
+*/
+
+/* Swatch container - wigs.com style grid */
+.swatch-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 4.5rem);
+  column-gap: 0.1875rem; /* Horizontal spacing between swatches */
+  row-gap: 0.5rem; /* Vertical spacing between rows */
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .swatch-container {
+    grid-template-columns: repeat(auto-fill, 4.5rem);
+    column-gap: 0.125rem;
+    row-gap: 0.4rem;
+  }
+}
+
+/* Individual swatch figure */
+.swatch-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.swatch-figure.hidden {
+  display: none;
+}
+
+/* Swatch image wrapper - 45px x 45px */
+.swatch-image-wrapper {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 0.2rem solid rgba(var(--color-foreground), 0.15);
+  border-radius: 0.4rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.swatch-figure:hover .swatch-image-wrapper {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: rgba(var(--color-foreground), 0.3);
+}
+
+/* Selected state */
+.swatch-figure.selected .swatch-image-wrapper {
+  border: 0.3rem solid rgb(var(--color-button));
+  box-shadow: 0 4px 12px rgba(var(--color-button), 0.3);
+}
+
+/* Swatch image */
+.swatch-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Unavailable overlay - solid red diagonal line bottom-left to top-right */
+.swatch-unavailable-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 0 45%,
+    #ff073a 45% 55%,
+    transparent 55% 100%
+  );
+  pointer-events: none;
+}
+
+.swatch-img.unavailable {
+  filter: grayscale(80%);
+}
+
+/* Tooltip on hover */
+.swatch-figure {
+  position: relative;
+}
+
+.swatch-figure::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 0.8rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 0.4rem;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, bottom 0.2s ease;
+  z-index: 100;
+}
+
+.swatch-figure:hover::after {
+  opacity: 1;
+  bottom: calc(100% + 0.5rem);
+}
+
+/* Tooltip arrow */
+.swatch-figure::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 0.3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 0.4rem solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, bottom 0.2s ease;
+  z-index: 100;
+}
+
+.swatch-figure:hover::before {
+  opacity: 1;
+  bottom: calc(100% + 0.1rem);
+}
+
+/* Hidden select for form submission */
+.variant-select-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

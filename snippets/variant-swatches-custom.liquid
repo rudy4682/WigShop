@@ -1,0 +1,144 @@
+{%- comment -%}
+  Renders wigs.com-style clickable image swatches
+
+  Accepts:
+  - product: {Object} Product object
+  - block: {Object} Block object with settings
+  - update_url: {Boolean} Whether clicking updates the URL (optional)
+
+  Usage:
+  {% render 'variant-swatches-custom', product: product, block: block %}
+{%- endcomment -%}
+
+{%- liquid
+  # Never auto-select a variant - always start with "Make a selection"
+  assign current_variant = null
+
+  # Get block settings with proper defaults
+  if block.settings.show_inventory_status != null
+    assign show_inventory = block.settings.show_inventory_status
+  else
+    assign show_inventory = true
+  endif
+
+  if block.settings.show_variant_price != null
+    assign show_price = block.settings.show_variant_price
+  else
+    assign show_price = false
+  endif
+
+  assign inventory_mode = block.settings.inventory_display_mode | default: 'all'
+
+  # Sort variants based on inventory display mode
+  if inventory_mode == 'available_only'
+    assign variants_to_show = product.variants | where: 'available', true
+  elsif inventory_mode == 'sold_out_last'
+    assign available_variants = product.variants | where: 'available', true
+    assign sold_out_variants = product.variants | where: 'available', false
+    assign variants_to_show = available_variants | concat: sold_out_variants
+  else
+    assign variants_to_show = product.variants
+  endif
+-%}
+
+{%- comment -%}
+  <!-- TODO: Color group filter tabs (implement with variant metafields)
+       Example metafield: variant.metafields.custom.color_group
+       Values: brunettes, blondes, grays, reds, etc.
+  <ul id="color-groups" class="color-groups">
+    <li><a href="#" data-color-group="all" class="active">All</a></li>
+    <li><a href="#" data-color-group="brunettes">Brunettes</a></li>
+    <li><a href="#" data-color-group="blondes">Blondes</a></li>
+    <li><a href="#" data-color-group="grays">Grays</a></li>
+    <li><a href="#" data-color-group="reds">Reds</a></li>
+  </ul>
+  -->
+{%- endcomment -%}
+
+<!-- Swatch container -->
+<div
+  id="swatch-container"
+  class="swatch-container"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-show-inventory="{{ show_inventory }}"
+>
+  {%- for variant in variants_to_show -%}
+    {%- liquid
+      assign is_available = variant.available
+      assign is_selected = false
+      if current_variant and current_variant.id == variant.id
+        assign is_selected = true
+      endif
+
+      # Get the variant image or fallback to product featured image
+      if variant.featured_image
+        assign variant_image = variant.featured_image
+      elsif variant.image
+        assign variant_image = variant.image
+      else
+        assign variant_image = product.featured_image
+      endif
+
+      # TODO: Get color group from metafield when implemented
+      # assign color_group = variant.metafields.custom.color_group | default: 'all'
+      assign color_group = 'all'
+    -%}
+
+    <figure
+      class="swatch-figure{% if is_selected %} selected{% endif %}"
+      data-color-group="{{ color_group }}"
+      data-variant-id="{{ variant.id }}"
+      title="{{ variant.title }}"
+    >
+      <div class="swatch-image-wrapper">
+        <img
+          data-available="{{ is_available }}"
+          data-variant-id="{{ variant.id }}"
+          class="swatch-img{% unless is_available %} unavailable{% endunless %}"
+          src="{{ variant_image | image_url: width: 45 }}"
+          alt="{{ variant.option1 }}"
+          loading="lazy"
+          height="45"
+          width="45"
+        >
+        {%- unless is_available -%}
+          <span class="swatch-unavailable-overlay"></span>
+        {%- endunless -%}
+      </div>
+    </figure>
+  {%- endfor -%}
+</div>
+
+<!-- Dropdown select (visible) -->
+<select
+  id="variant-select-{{ section.id }}"
+  name="id"
+  class="variant-select-dropdown"
+  form="product-form-{{ section.id }}"
+>
+  <option
+    value=""
+    disabled
+    selected
+  >
+    {{ 'products.product.make_a_selection' | t }}
+  </option>
+  {%- for variant in variants_to_show -%}
+    <option
+      value="{{ variant.id }}"
+    >
+      {% if show_price %}
+        {{ variant.title }} - {{ variant.price | money }}
+      {% else %}
+        {{ variant.title }}
+      {% endif %}
+      {% unless variant.available %} (Sold Out){% endunless %}
+    </option>
+  {%- endfor -%}
+</select>
+
+<!-- Variant data as JSON -->
+<script type="application/json" id="variant-data-{{ section.id }}">
+  {{ product.variants | json }}
+</script>

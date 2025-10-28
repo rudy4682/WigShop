@@ -46,24 +46,4 @@
   {%- endfor -%}
 </select>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const select = document.getElementById('VariantDropdown-{{ section.id }}');
-    if (!select) return;
-
-    select.addEventListener('change', function () {
-      const opt = select.options[select.selectedIndex];
-      const selectedOptionValues = (opt?.dataset.optionValues || '').split(',').filter((v) => v !== '');
-
-      if (window.publish && window.PUB_SUB_EVENTS) {
-        window.publish(window.PUB_SUB_EVENTS.optionValueSelectionChange, {
-          data: {
-            event: new Event('change'),
-            target: select,
-            selectedOptionValues,
-          },
-        });
-      }
-    });
-  });
-</script>
+{%- comment -%} Dropdown behavior consolidated in `assets/global.js` to ensure consistent event publishing and avoid double-handlers. {%- endcomment -%}

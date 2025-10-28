@@ -30,6 +30,7 @@
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
     {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
     {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+    {{ 'component-swatch-custom.css' | asset_url | stylesheet_tag }}
   {% endunless %}
   {%- if product.quantity_price_breaks_configured? -%}
     {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
@@ -52,6 +53,7 @@
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'pickup-badge.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'variant-swatches-custom.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -135,10 +137,31 @@
                 {%- assign lowest_price = product.price_min -%}
                 {%- assign highest_compare = product.compare_at_price_max -%}
 
-                <div class="price-block">
+                <div class="price-block" id="price-{{ section.id }}">
                   {%- assign current_variant = product.selected_or_first_available_variant -%}
+                  {%- assign show_from_price = true -%}
 
-                  {% if current_variant %}
+                  {%- comment -%} Check if variant was explicitly selected via URL parameter {%- endcomment -%}
+                  {%- if product.selected_variant -%}
+                    {%- assign show_from_price = false -%}
+                  {%- endif -%}
+
+                  {% if show_from_price %}
+                    <span class="price" data-price-min="{{ lowest_price }}"> From {{ lowest_price | money }} </span>
+                    {% if highest_compare > lowest_price %}
+                      <span class="compare-price">
+                        {{ 'products.product.price.regular_price' | t }}: {{ highest_compare | money }}
+                      </span>
+                      {%- assign discount = highest_compare
+                        | minus: lowest_price
+                        | times: 100
+                        | divided_by: highest_compare
+                      -%}
+                      {% if discount >= min_discount %}
+                        <span class="sale-badge">{{ 'products.product.on_sale' | t }}</span>
+                      {% endif %}
+                    {% endif %}
+                  {% else %}
                     <span class="price">{{ current_variant.price | money }}</span>
                     {% if current_variant.compare_at_price
                       and current_variant.compare_at_price > current_variant.price
@@ -150,23 +173,6 @@
                         | minus: current_variant.price
                         | times: 100
                         | divided_by: current_variant.compare_at_price
-                      -%}
-                      {% if discount >= min_discount %}
-                        <span class="sale-badge">{{ 'products.product.on_sale' | t }}</span>
-                      {% endif %}
-                    {% endif %}
-                  {% else %}
-                    <span class="price">
-                      {{ 'products.product.price.from_price_html' | t: price: lowest_price | money }}
-                    </span>
-                    {% if highest_compare > lowest_price %}
-                      <span class="compare-price">
-                        {{ 'products.product.price.regular_price' | t }}: {{ highest_compare | money }}
-                      </span>
-                      {%- assign discount = highest_compare
-                        | minus: lowest_price
-                        | times: 100
-                        | divided_by: highest_compare
                       -%}
                       {% if discount >= min_discount %}
                         <span class="sale-badge">{{ 'products.product.on_sale' | t }}</span>
@@ -568,14 +574,8 @@
                 %}
 
               {%- when 'variant_picker' -%}
-                {% comment %} AUDIT: Dual selector logic gated by theme setting {% endcomment %}
-                {% if settings.enable_dual_selector %}
-                  {% render 'variant-selector', product: product, block: block %}
-                {% elsif block.settings.picker_type == 'dropdown' %}
-                  {% render 'variant-dropdown', product: product, block: block %}
-                {% else %}
-                  {% render 'variant-swatches', product: product, block: block %}
-                {% endif %}
+                {% comment %} AUDIT: Custom wigs.com-style swatch picker {% endcomment %}
+                {% render 'variant-swatches-custom', product: product, block: block %}
 
               {%- when 'buy_buttons' -%}
                 {%- render 'buy-buttons',
@@ -1097,6 +1097,52 @@
           "id": "enable_dual_selector",
           "label": "t:sections.main-product.blocks.variant_picker.settings.enable_dual_selector.label",
           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Variant Display Options"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_color_name",
+          "label": "Show color name on swatches",
+          "default": false,
+          "info": "Display color/variant name on hover"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_inventory_status",
+          "label": "Show inventory status",
+          "default": true,
+          "info": "Display inventory indicators (low stock, out of stock)"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_variant_price",
+          "label": "Show variant price in dropdown",
+          "default": true,
+          "info": "Display price next to variant name in dropdown"
+        },
+        {
+          "type": "select",
+          "id": "inventory_display_mode",
+          "label": "Inventory display mode",
+          "options": [
+            {
+              "value": "all",
+              "label": "Show all variants"
+            },
+            {
+              "value": "available_only",
+              "label": "Show available variants only"
+            },
+            {
+              "value": "sold_out_last",
+              "label": "Show sold out variants last"
+            }
+          ],
+          "default": "all",
+          "info": "Control which variants are displayed"
         }
       ]
     },

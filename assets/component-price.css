@@ -1,8 +1,13 @@
 .price {
-  font-size: 1.6rem;
-  letter-spacing: 0.1rem;
-  line-height: calc(1 + 0.5 / var(--font-body-scale));
+  font-size: 2rem;
+  letter-spacing: 0.05rem;
+  line-height: 1.3;
   color: rgb(var(--color-foreground));
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .price > * {
@@ -38,14 +43,15 @@
 }
 
 .price--large {
-  font-size: 1.6rem;
-  line-height: calc(1 + 0.5 / var(--font-body-scale));
-  letter-spacing: 0.13rem;
+  font-size: 2.4rem;
+  line-height: 1.3;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
 }
 
 @media screen and (min-width: 750px) {
   .price--large {
-    font-size: 1.8rem;
+    font-size: 2.8rem;
   }
 }
 
@@ -86,8 +92,22 @@
 
 .price--on-sale .price-item--regular {
   text-decoration: line-through;
-  color: rgba(var(--color-foreground), 0.75);
-  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.55);
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+/* Sale price is larger and more prominent like wigs.com */
+.price--on-sale .price-item--sale {
+  color: rgb(var(--color-base-accent-1, 220, 38, 38));
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+@media screen and (min-width: 750px) {
+  .price--on-sale .price-item--sale {
+    font-size: 2.8rem;
+  }
 }
 
 .unit-price {

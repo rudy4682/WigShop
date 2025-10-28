@@ -57,13 +57,13 @@
         {%- endfor -%}
       ],
       "sku": {{ product.variants.first.sku | json }},
-      "offers": {
-        "@type": "Offer",
-        "availability": "{% if product.available %}http://schema.org/InStock{% else %}http://schema.org/OutOfStock{% endif %}",
-        "price": {{ product.price | divided_by: 100.0 | json }},
-        "priceCurrency": {{ cart.currency | json }},
-        "url": {{ canonical_url | json }}
-      }
+          "offers": {
+            "@type": "Offer",
+            "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+            "price": {{ product.price | divided_by: 100.0 | json }},
+            "priceCurrency": {{ shop.currency | json }},
+            "url": {{ canonical_url | json }}
+          }
     }
   </script>
 {%- else -%}
@@ -85,7 +85,7 @@
 {%- endif -%}
 
 {%- comment -%} canonical — always product root URL {%- endcomment -%}
-<link rel="canonical" href="{{ product.url | prepend: shop.url }}">
+<link rel="canonical" href="{{ canonical_url | escape }}">
 
 {%- comment -%} og:image — prefer variant featured image when URL contains id param {%- endcomment -%}
 {%- assign og_image = product.featured_image -%}
@@ -96,5 +96,5 @@
   {%- endif -%}
 {%- endif -%}
 
-<meta property="og:image" content="{{ og_image | image_url: width: 1200, height: 630 | prepend: shop.secure_url }}">
+<meta property="og:image" content="{{ og_image | image_url: width: 1200, height: 630 }}">
 <meta property="og:image:alt" content="{{ og_image.alt | default: product.title | escape }}">

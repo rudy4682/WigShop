@@ -18,11 +18,11 @@ This checklist is a safe, low-risk audit and cleanup guide for the icon assets (
 
 Run these commands from the workspace root (works in `cmd.exe`). They will list all icon files and then search the codebase for references.
 
-1) List all icon assets:
+1. List all icon assets:
 
   dir assets\icon-*.svg /b
 
-2) Search for references (fast, reports files that contain the icon name):
+1. Search for references (fast, reports files that contain the icon name):
 
   FOR /F "usebackq delims=" %f IN (`dir /b assets\icon-*.svg`) DO @echo %f & findstr /s /i /m "%~nf.svg" *.* || echo "NO_MATCH: %f"
 
