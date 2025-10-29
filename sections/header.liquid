@@ -139,13 +139,24 @@
       justify-content: center;
     }
 
-    /* For top-left and middle-left, keep search in grid flow */
-    .header--top-left .header__search,
+    /* For top-left layout: search should be in first row, centered */
+    .header--top-left .header__search {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50; /* Below icons but above other content */
+      display: inline-flex !important;
+    }
+
+    /* For middle-left: search should be centered between heading and icons */
     .header--middle-left .header__search {
-      position: relative;
-      transform: none;
-      grid-area: heading;
-      justify-self: center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0.6rem;
+      z-index: 1100;
+      display: inline-flex !important;
     }
 
     /* Increase the max-width so the centered search is noticeably wider like wigs.com */
