@@ -159,8 +159,11 @@
       display: inline-flex !important;
     }
 
-    /* Increase the max-width so the centered search is noticeably wider like wigs.com */
-    .header__search-form { max-width: 1000px; }
+    /* Reduce search bar width - 45% smaller, fits ~25-30 characters */
+    .header__search-form { 
+      max-width: 550px;
+      width: 100%;
+    }
   }
 
   /* Mobile overlay state when user taps the search icon */
