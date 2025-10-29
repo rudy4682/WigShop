@@ -9,6 +9,12 @@
 >
 
 {%- if settings.predictive_search_enabled -%}
+  <link
+    rel="stylesheet"
+    href="{{ 'component-predictive-search.css' | asset_url }}"
+    media="print"
+    onload="this.media='all'"
+  >
   <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
 {%- endif -%}
 
@@ -163,6 +169,25 @@
     .header__search-form {
       max-width: 550px;
       width: 100%;
+    }
+  }
+
+  /* Predictive search dropdown positioning for header */
+  .header__search predictive-search {
+    position: relative;
+    display: block;
+  }
+
+  .header__search .predictive-search {
+    width: 100%;
+    min-width: 400px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .header__search .predictive-search--header {
+      left: 0;
+      right: auto;
+      width: calc(100% + 0.2rem);
     }
   }
 
@@ -581,7 +606,9 @@
 
     closeSearchModal() {
       this.searchModal = this.searchModal || this.header.querySelector('details-modal');
-      this.searchModal.close(false);
+      if (this.searchModal) {
+        this.searchModal.close(false);
+      }
     }
   }
 

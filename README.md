@@ -29,14 +29,19 @@ Say you're building a new theme off WigShop/Dawn but you still want to be able t
 
 1. Navigate to your local theme folder.
 2. Verify the list of remotes and validate that you have both an `origin` and `upstream`:
+
 ```sh
 git remote -v
 ```
+
 3. If you don't see an `upstream`, you can add one that points to Shopify's Dawn repository:
+
 ```sh
 git remote add upstream https://github.com/Shopify/dawn.git
 ```
+
 4. Pull in the latest Dawn changes into your repository:
+
 ```sh
 git fetch upstream
 git pull upstream main
@@ -74,7 +79,7 @@ We love fast websites! Which is why we use [Shopify/lighthouse-ci-action](https:
 
 #### Shopify/theme-check-action
 
-WigShop runs [Theme Check](#Theme-Check) on every commit via [Shopify/theme-check-action](https://github.com/Shopify/theme-check-action).
+WigShop runs [Theme Check](#theme-check) on every commit via [Shopify/theme-check-action](https://github.com/Shopify/theme-check-action).
 
 ## Contributing
 

@@ -30,6 +30,25 @@
 
   {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
     <div id="predictive-search-results" class="predictive-search__results-wrapper">
+      <div
+        id="predictive-search-results-groups-wrapper"
+        role="group"
+        aria-labelledby="predictive-search-results-live-region-count-value"
+      >
+        <div class="predictive-search__results-groups-wrapper" role="group">
+          <span
+            id="predictive-search-results-live-region-count-value"
+            data-predictive-search-live-region-count-value
+            class="visually-hidden"
+            role="status"
+          >
+            {%- liquid
+              assign total_results = first_column_results_size | plus: predictive_search.resources.products.size
+              echo 'templates.search.results_with_count' | t: count: total_results
+            -%}
+          </span>
+        </div>
+      </div>
       {%- if first_column_results_size > 0 -%}
         <div class="predictive-search__results predictive-search__results--first-column">
           {%- if predictive_search.resources.queries.size > 0 -%}

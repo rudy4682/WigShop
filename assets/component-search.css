@@ -11,6 +11,7 @@
   padding-right: 5rem; /* Space for search icon on right */
   padding-left: 1.5rem; /* Align text to left */
   text-align: left;
+}
 
 .reset__button {
   right: calc(var(--inputs-border-width) + 4.4rem);
