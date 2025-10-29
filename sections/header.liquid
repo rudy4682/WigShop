@@ -160,7 +160,7 @@
     }
 
     /* Reduce search bar width - 45% smaller, fits ~25-30 characters */
-    .header__search-form { 
+    .header__search-form {
       max-width: 550px;
       width: 100%;
     }
@@ -286,18 +286,24 @@
     <!-- 🔎 Search Block -->
     <div class="header__search">
       <!-- Full search form (tablet/desktop) -->
-      <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form">
-        <input
-          type="search"
-          name="q"
-          value="{{ search.terms | escape }}"
-          placeholder="Search"
-          aria-label="Search"
-          class="search__input field__input"
-        >
-        <button type="submit" class="search__button field__button" aria-label="Search">
-          <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
-        </button>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form search">
+        <div class="field">
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.search' | t }}"
+            aria-label="{{ 'general.search.search' | t }}"
+            class="search__input field__input"
+            id="Search-In-Header"
+          >
+          <label class="field__label" for="Search-In-Header">{{ 'general.search.search' | t }}</label>
+          <input name="options[prefix]" type="hidden" value="last">
+          
+          <button type="submit" class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+            <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
+          </button>
+        </div>
       </form>
 
       <!-- Mobile icon -->

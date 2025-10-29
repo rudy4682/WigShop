@@ -2,54 +2,15 @@
    SEARCH BAR STYLING
    =========================== */
 
+/* Header search inherits all default search styles */
 .header__search-form {
-  position: relative;
   width: 100%;
 }
 
-.header__search-form .search__input.field__input {
+.search__input.field__input {
   padding-right: 5rem; /* Space for search icon on right */
   padding-left: 1.5rem; /* Align text to left */
-  border-radius: 25px; /* Fully rounded left and right */
   text-align: left;
-  width: 100%;
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
-
-.header__search-form .search__input.field__input:focus {
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
-
-.header__search-form .search__button {
-  position: absolute;
-  right: var(--inputs-border-width);
-  top: var(--inputs-border-width);
-  border-radius: 0 25px 25px 0; /* Match input right side rounding */
-  background: transparent;
-  border: none;
-  width: 4.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;
-}
-
-.header__search-form .search__button .svg-wrapper {
-  width: 1.8rem;
-  height: 1.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.header__search-form .search__button .icon {
-  width: 100%;
-  height: 100%;
-}
 
 .reset__button {
   right: calc(var(--inputs-border-width) + 4.4rem);
