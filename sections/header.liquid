@@ -286,25 +286,50 @@
     <!-- 🔎 Search Block -->
     <div class="header__search">
       <!-- Full search form (tablet/desktop) -->
-      <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form search">
-        <div class="field">
-          <input
-            type="search"
-            name="q"
-            value="{{ search.terms | escape }}"
-            placeholder="{{ 'general.search.search' | t }}"
-            aria-label="{{ 'general.search.search' | t }}"
-            class="search__input field__input"
-            id="Search-In-Header"
-          >
-          <label class="field__label" for="Search-In-Header">{{ 'general.search.search' | t }}</label>
-          <input name="options[prefix]" type="hidden" value="last">
-          
-          <button type="submit" class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
-            <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
-          </button>
-        </div>
-      </form>
+      {%- if settings.predictive_search_enabled -%}
+        <predictive-search data-loading-text="{{ 'accessibility.loading' | t }}">
+      {%- endif -%}
+        <form action="{{ routes.search_url }}" method="get" role="search" class="header__search-form search">
+          <div class="field">
+            <input
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="{{ 'general.search.search' | t }}"
+              aria-label="{{ 'general.search.search' | t }}"
+              class="search__input field__input"
+              id="Search-In-Header"
+              {%- if settings.predictive_search_enabled -%}
+                role="combobox"
+                aria-expanded="false"
+                aria-owns="predictive-search-results-header"
+                aria-controls="predictive-search-results-header"
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                autocorrect="off"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+              {%- endif -%}
+            >
+            <label class="field__label" for="Search-In-Header">{{ 'general.search.search' | t }}</label>
+            <input name="options[prefix]" type="hidden" value="last">
+
+            {%- if settings.predictive_search_enabled -%}
+              <div class="predictive-search predictive-search--header" tabindex="-1" data-predictive-search>
+                {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+              </div>
+              <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+            {%- endif -%}
+
+            <button type="submit" class="search__button field__button" aria-label="{{ 'general.search.search' | t }}">
+              <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
+            </button>
+          </div>
+        </form>
+      {%- if settings.predictive_search_enabled -%}
+        </predictive-search>
+      {%- endif -%}
 
       <!-- Mobile icon -->
       <button class="header__search-icon" aria-label="Search">
