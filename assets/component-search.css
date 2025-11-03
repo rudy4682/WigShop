@@ -2,15 +2,17 @@
    SEARCH BAR STYLING
    =========================== */
 
-/* Header search inherits all default search styles */
-.header__search-form {
-  width: 100%;
+.search__input.field__input {
+  padding-right: 9.8rem;
+  border-radius: 6px 0 0 6px;
+  /* rounded left corners */
 }
 
-.search__input.field__input {
-  padding-right: 5rem; /* Space for search icon on right */
-  padding-left: 1.5rem; /* Align text to left */
-  text-align: left;
+.search__button {
+  right: var(--inputs-border-width);
+  top: var(--inputs-border-width);
+  border-radius: 0 6px 6px 0;
+  /* rounded right corners */
 }
 
 .reset__button {
@@ -158,24 +160,22 @@ input::-webkit-search-decoration {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    /* Use viewport-relative width so the search takes at least ~60% of the screen */
-    width: 60vw;
-    max-width: 1000px; /* cap the width on very large screens */
-    min-width: 40rem; /* ensure a comfortable minimum (approx 640px) */
+    max-width: 400px;
+    width: 100%;
   }
 
   .header__search-form input[type="search"] {
     flex: 1;
-    padding: 0.75rem 1.75rem; /* increased horizontal padding for wider appearance */
-    border: 3px solid var(--color-border, #bfbfbf); /* increased border thickness for visibility */
-    border-radius: 999px 0 0 999px; /* pill-like left rounded */
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px 0 0 6px;
   }
 
   .header__search-form button {
-    padding: 0.75rem 1.25rem; /* slightly larger tappable area */
-    border: 3px solid var(--color-border, #bfbfbf); /* match increased border */
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
     border-left: none;
-    border-radius: 0 999px 999px 0; /* pill-like right rounded */
+    border-radius: 0 6px 6px 0;
     background: #000;
     color: #fff;
     cursor: pointer;

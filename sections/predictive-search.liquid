@@ -30,25 +30,6 @@
 
   {%- if first_column_results_size > 0 or predictive_search.resources.products.size > 0 -%}
     <div id="predictive-search-results" class="predictive-search__results-wrapper">
-      <div
-        id="predictive-search-results-groups-wrapper"
-        role="group"
-        aria-labelledby="predictive-search-results-live-region-count-value"
-      >
-        <div class="predictive-search__results-groups-wrapper" role="group">
-          <span
-            id="predictive-search-results-live-region-count-value"
-            data-predictive-search-live-region-count-value
-            class="visually-hidden"
-            role="status"
-          >
-            {%- liquid
-              assign total_results = first_column_results_size | plus: predictive_search.resources.products.size
-              echo 'templates.search.results_with_count' | t: count: total_results
-            -%}
-          </span>
-        </div>
-      </div>
       {%- if first_column_results_size > 0 -%}
         <div class="predictive-search__results predictive-search__results--first-column">
           {%- if predictive_search.resources.queries.size > 0 -%}
@@ -105,23 +86,10 @@
               <li class="predictive-search__list-item" role="option">
                 <a href="{{ product.url }}" class="predictive-search__item">
                   <div class="predictive-search__item-image-wrapper">
-                    {%- comment -%}
-                      Always use product.featured_media (not variant image)
-                      even when search matches a variant's color/option
-                    {%- endcomment -%}
                     {%- if product.featured_media -%}
                       <img
                         src="{{ product.featured_media | image_url: width: 150 }}"
-                        alt="{{ product.title | escape }}"
-                        class="predictive-search__item-image"
-                        loading="lazy"
-                        width="150"
-                        height="150"
-                      >
-                    {%- elsif product.featured_image -%}
-                      <img
-                        src="{{ product.featured_image | image_url: width: 150 }}"
-                        alt="{{ product.title | escape }}"
+                        alt="{{ product.featured_media.alt | escape }}"
                         class="predictive-search__item-image"
                         loading="lazy"
                         width="150"
