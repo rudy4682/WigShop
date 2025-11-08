@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "settings_schema": {
     "global": {
@@ -877,9 +886,6 @@
               },
               "options__2": {
                 "label": "Pills"
-              },
-              "options__3": {
-                "label": "Swatches"
               }
             },
             "swatch_shape": {
@@ -894,10 +900,7 @@
               "options__3": {
                 "label": "None"
               }
-            },
-                "enable_dual_selector": {
-      "label": "Enable Dual Selector (Swatches + Dropdown)"
-    }
+            }
           }
         },
         "buy_buttons": {
@@ -2818,7 +2821,6 @@
             "label": "Adapt to image"
           },
           "options__2": {
-           
             "label": "Portrait"
           },
           "options__3": {

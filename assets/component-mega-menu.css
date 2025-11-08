@@ -13,9 +13,7 @@
   padding-top: 3rem;
   position: absolute;
   right: 0;
-  /* add a small gap between header and mega-menu so the centered search doesn't overlap menu items */
-  top: calc(100% + 1rem);
-  z-index: 1200; /* ensure mega-menu sits above header search when open */
+  top: 100%;
 }
 
 .shopify-section-header-sticky .mega-menu__content {

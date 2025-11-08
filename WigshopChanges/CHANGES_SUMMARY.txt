@@ -1,0 +1,229 @@
+WigShop Theme Changes - Based on Dawn 15.4.0
+===============================================
+Date: November 3, 2025
+Base: Dawn Theme version 15.4.0 (commit 131f4af)
+
+IMPORTANT NOTE: All search-related customizations were reverted in commit e3bc32e
+to restore Dawn 15.4.0 defaults. The files in this backup reflect the state after
+that reversion.
+
+===============================================
+MAJOR CUSTOMIZATIONS
+===============================================
+
+1. BRANDING & THEME INFORMATION
+   - Theme renamed from "Dawn" to "WigShop"
+   - Theme author changed to "Adams Computer & Network"
+   - Updated theme_version to include "based on Dawn 15.4.0"
+   - Modified README.md with WigShop branding
+   - Updated theme_support_url to correct domain
+
+2. HEADER CUSTOMIZATION (sections/header.liquid)
+   - Fixed logo positioning for "top-left" layout
+   - Logo now appears in top-left corner (was showing bottom-right)
+   - Search bar positioned in top-center
+   - Added custom CSS for header search visibility on tablet & desktop
+   - Mobile: search collapses to icon only
+   - Desktop: full search form always visible
+   - Added mobile search overlay functionality
+   - Custom grid area assignments for top-left header variant
+   - Removed old header-search modal trigger (simplified to direct form)
+
+3. SEARCH FUNCTIONALITY (Reverted to Dawn defaults)
+   - All predictive search customizations were removed
+   - Search now uses original Dawn 15.4.0 implementation
+   - Files reverted: header.liquid, component-search.css, main-search.liquid, 
+     predictive-search.liquid, predictive-search.js
+
+4. ICON CLEANUP
+   - Archived unused icons to assets/legacy-icons
+   - Documented in .Todos/ICON_CLEANUP.md
+   - Removed deprecated and unused icon files
+
+5. PRODUCT CUSTOMIZATIONS
+   
+   a) Variant Swatches System:
+      - Created custom swatch system for color/pattern selection
+      - Files: variant-swatches-custom.js, component-swatch-custom.css
+      - Enhanced swatch functionality with image support
+      - Added hover states and active selection indicators
+   
+   b) Product Media:
+      - Enhanced media gallery with improved navigation
+      - Updated media-gallery.js for better mobile experience
+      - Modified product-media-gallery.liquid snippet
+      - Added modal improvements in product-media-modal.liquid
+   
+   c) Product Page Layout:
+      - Customized main-product.liquid section
+      - Enhanced product information display
+      - Improved variant picker layout
+      - Added custom CSS in section-main-product.css
+
+6. PRICING & DISPLAY
+   - Modified component-price.css for custom price formatting
+   - Enhanced price display for variants
+   - Improved sale price indicators
+
+7. MEGA MENU ENHANCEMENTS
+   - Updated component-mega-menu.css
+   - Improved navigation dropdown styling
+   - Enhanced mobile menu experience
+
+8. GLOBAL STYLES
+   - Modified base.css for theme-wide styling adjustments
+   - Updated global.js for custom JavaScript functionality
+   - Enhanced responsive breakpoints
+
+9. COLLECTIONS
+   - Modified main-list-collections.liquid
+   - Improved collection grid layout
+   - Enhanced collection card styling
+
+10. BLOG/ARTICLES
+    - Updated main-article.liquid
+    - Improved article layout and typography
+    - Enhanced social sharing functionality
+
+11. PASSWORD PAGE
+    - Customized layout/password.liquid
+    - Improved password protection page design
+
+12. SETTINGS & CONFIGURATION
+    - Modified config/settings_schema.json
+    - Added custom theme settings
+    - Enhanced color scheme options
+
+13. META TAGS & SEO
+    - Updated snippets/meta-tags.liquid
+    - Improved SEO metadata handling
+    - Enhanced social media sharing tags
+
+14. THEME CHECK CONFIGURATION
+    - Updated .theme-check.yml
+    - Removed invalid 'path' parameter from workflow
+    - Configured linting rules for WigShop
+
+===============================================
+DEVELOPMENT TOOLS & DOCUMENTATION
+===============================================
+
+1. .Todos/ICON_CLEANUP.md - Documentation of icon archival process
+2. .Todos/run-theme-check.ps1 - PowerShell script for theme validation
+3. .theme-check.yml - Theme-check configuration
+4. README.md - Updated with WigShop branding and information
+
+===============================================
+SEARCH CUSTOMIZATION HISTORY (REVERTED)
+===============================================
+
+The following search-related changes were implemented but later reverted:
+- Enabled predictive search in header search bar
+- Added predictive-search wrapper element
+- Added ARIA attributes for accessibility
+- Added predictive search results container
+- Fixed CSS syntax error (missing closing brace)
+- Added predictive search positioning styles
+- Added null check for closeSearchModal
+- Added live region count element
+- Added resources parameter to API call
+- Improved max-height validation
+- Enhanced focus-out timeout
+
+These changes were reverted in commit e3bc32e to restore Dawn 15.4.0 defaults.
+
+===============================================
+FILES MODIFIED FROM DAWN 15.4.0
+===============================================
+
+Configuration Files:
+- .theme-check.yml
+- README.md
+- config/settings_schema.json
+
+Assets:
+- assets/base.css
+- assets/component-mega-menu.css
+- assets/component-price.css
+- assets/component-swatch-custom.css (NEW)
+- assets/component-swatch.css
+- assets/global.js
+- assets/media-gallery.js
+- assets/section-main-product.css
+- assets/variant-swatches-custom.js (NEW)
+
+Layout:
+- layout/password.liquid
+
+Sections:
+- sections/main-article.liquid
+- sections/main-list-collections.liquid
+- sections/main-product.liquid
+
+Snippets:
+- snippets/meta-tags.liquid
+- snippets/product-media-gallery.liquid
+- snippets/product-media-modal.liquid
+- snippets/swatch.liquid
+- snippets/variant-dropdown.liquid
+- snippets/variant-swatches-custom.liquid (NEW)
+- snippets/variant-swatches.liquid
+
+Documentation:
+- .Todos/ICON_CLEANUP.md (NEW)
+- .Todos/run-theme-check.ps1 (NEW)
+
+===============================================
+NOTES FOR FRESH CLONE SETUP
+===============================================
+
+To apply these customizations to a fresh Dawn 15.4.0 clone:
+
+1. Copy all files from WigshopChanges subdirectories to their corresponding
+   locations in the new Dawn clone
+
+2. Review and merge any new Dawn features that may have been added since 15.4.0
+
+3. Test thoroughly:
+   - Header layout (especially top-left logo position)
+   - Search functionality (should be Dawn default)
+   - Product pages with variant swatches
+   - Media gallery
+   - Mobile responsiveness
+   - Collection pages
+   - Blog/article pages
+
+4. Ensure theme settings are configured in the Shopify admin
+
+5. Run theme-check before deploying:
+   .\.Todos\run-theme-check.ps1
+
+===============================================
+GIT COMMIT HISTORY
+===============================================
+
+e3bc32e - Revert all search customizations to Dawn 15.4.0 defaults
+581e619 - Fix predictive search display issues
+fddd6a0 - Add missing reset button to header search
+a0f16ca - Enable predictive search in header search bar
+a37c85e - Match header search bar layout to main-search.liquid
+b534fe7 - Remove decorations from header search bar
+260ab00 - Reduce search bar width by 45%
+a70314a - Update theme_support_url to correct domain
+f03f327 - Fix theme_version length (max 25 chars)
+45ba6a2 - Rebrand theme from Dawn to WigShop
+ed02613 - Fix header logo positioning and search bar styling
+131f4af - Base Dawn 15.4.0 (before customizations)
+
+===============================================
+CONTACT & SUPPORT
+===============================================
+
+Theme: WigShop
+Based on: Shopify Dawn 15.4.0
+Developer: Adams Computer & Network
+Support: rudy4682@gmail.com
+
+===============================================
+END OF CHANGES SUMMARY
+===============================================

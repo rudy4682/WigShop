@@ -100,18 +100,6 @@
     </button>
   </modal-opener>
 
-  {%- comment -%}
-    Image caption: show provided alt text; fall back to product title or first option value
-  {%- endcomment -%}
-  {%- assign caption_text = media.alt
-    | default: product.title
-    | default: product.selected_or_first_available_variant.option1
-    | escape
-  -%}
-  {%- if caption_text != blank -%}
-    <figcaption class="product-media-caption caption">{{ caption_text }}</figcaption>
-  {%- endif -%}
-
   {%- if media.media_type != 'image' -%}
     {%- if media.media_type == 'model' -%}
       <product-model class="deferred-media media media--transparent" data-media-id="{{ media.id }}">

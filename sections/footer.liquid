@@ -26,29 +26,6 @@
     }
   }
 {%- endstyle -%}
-{{ 'component-embeds.css' | asset_url | stylesheet_tag }}
-
-{% if settings.show_reviews %}
-  <div class="reviews-embeds page-width">
-    {% if settings.google_reviews_embed_url %}
-      <iframe class="reviews-embed" src="{{ settings.google_reviews_embed_url }}" loading="lazy"></iframe>
-    {% endif %}
-    {% if settings.facebook_reviews_embed_url %}
-      <iframe class="reviews-embed" src="{{ settings.facebook_reviews_embed_url }}" loading="lazy"></iframe>
-    {% endif %}
-  </div>
-{% endif %}
-
-{% if settings.show_store_map and settings.store_map_url %}
-  <div class="store-map page-width">
-    <iframe
-      class="map-embed"
-      src="{{ settings.store_map_url }}"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-  </div>
-{% endif %}
 
 <footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
   {%- liquid
@@ -322,41 +299,21 @@
     </div>
     <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
       <div class="footer__copyright caption">
-        <small class="copyright__content">
-          &copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
+        <small class="copyright__content"
+          >&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
         </small>
         <small class="copyright__content">{{ powered_by_link }}</small>
-
         {%- if section.settings.show_policy -%}
           <ul class="policies list-unstyled">
             {%- for policy in shop.policies -%}
               {%- if policy != blank -%}
                 <li>
-                  <small class="copyright__content">
-                    <a href="{{ policy.url }}">{{ policy.title | escape }}</a>
-                  </small>
+                  <small class="copyright__content"
+                    ><a href="{{ policy.url }}">{{ policy.title | escape }}</a></small
+                  >
                 </li>
               {%- endif -%}
             {%- endfor -%}
-          </ul>
-        {%- endif -%}
-
-        {%- if settings.privacy_policy_url or settings.cookie_policy_url -%}
-          <ul class="policies list-unstyled">
-            {% if settings.privacy_policy_url %}
-              <li>
-                <small class="copyright__content">
-                  <a href="{{ settings.privacy_policy_url }}">Privacy Policy</a>
-                </small>
-              </li>
-            {% endif %}
-            {% if settings.cookie_policy_url %}
-              <li>
-                <small class="copyright__content">
-                  <a href="{{ settings.cookie_policy_url }}">Cookie Policy</a>
-                </small>
-              </li>
-            {% endif %}
           </ul>
         {%- endif -%}
       </div>

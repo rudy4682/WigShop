@@ -1,77 +1,32 @@
 {% comment %}
-  AUDIT HEADER — WigShop v1.0
-  File: snippets/swatch.liquid
-  Purpose: Renders a swatch with variant image fallback logic
+  Renders a swatch component.
   Accepts:
-    - swatch: {Object} a swatch object
-    - variant: {Object} optional variant object (for featured_media + title)
-    - shape: {String} swatch shape. Accepts 'square', defaults to circle.
-  Notes:
-    - Prefers variant.featured_media image if available
-    - Falls back to swatch.image, then swatch.color, then neutral gray
-    - Forces square swatches (border-radius: 0.2rem)
-    - Adds hover tooltip with variant title
-    - Includes visually hidden span for accessibility
+  - swatch: {Object} a swatch object
+  - shape: {String} swatch shape. Accepts 'square', defaults to circle.
+
   Usage:
-    {% render 'swatch',
-      swatch: value.swatch,
-      variant: value,
-      shape: 'square'
-    %}
+  {% render 'swatch',
+    swatch: value.swatch
+    shape: 'square'
+  %}
 {% endcomment %}
 
 {%- liquid
-  assign swatch_shape = shape | default: 'square'
-  assign swatch_style = ''
-  assign swatch_focal_point = null
-  assign swatch_title = null
-
-  if variant and variant.featured_media
-    assign image_url = variant.featured_media | image_url: width: 50, height: 50
-    assign swatch_style = 'background-image: url(' | append: image_url | append: ');'
-    assign swatch_focal_point = variant.featured_media.presentation.focal_point
-    assign swatch_title = variant.title
-  elsif swatch.image
+  assign swatch_value = null
+  if swatch.image
     assign image_url = swatch.image | image_url: width: 50
-    assign swatch_style = 'background-image: url(' | append: image_url | append: ');'
+    assign swatch_value = 'url(' | append: image_url | append: ')'
     assign swatch_focal_point = swatch.image.presentation.focal_point
-    assign swatch_title = swatch.image.alt | default: swatch.color.name
   elsif swatch.color
-    assign swatch_style = 'background-color: rgb(' | append: swatch.color.rgb | append: ');'
-    assign swatch_title = swatch.color.name
-  else
-    assign swatch_style = 'background-color: #e0e0e0;'
-    assign swatch_title = 'Unavailable'
+    assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
   endif
 -%}
 
-{%- assign qty = 0 -%}
-{%- if variant -%}
-  {%- assign qty = variant.inventory_quantity | default: 0 -%}
-{%- endif -%}
-{%- assign low_limit = settings.stock_low_threshold | default: 9 -%}
-{%- assign very_low_limit = settings.stock_very_low_threshold | default: 3 -%}
-{%- assign availability_class = 'available' -%}
-{%- if variant.available == false -%}
-  {%- assign availability_class = 'unavailable' -%}
-{%- elsif qty <= very_low_limit and qty > 0 -%}
-  {%- assign availability_class = 'very-low' -%}
-{%- elsif qty <= low_limit and qty > 0 -%}
-  {%- assign availability_class = 'low' -%}
-{%- endif -%}
-
 <span
-  class="swatch swatch--{{ swatch_shape }} swatch--{{ availability_class }}"
-  title="{{ swatch_title | escape }}"
-  style="{{ swatch_style }}"
-  {%- if swatch_focal_point != null -%}
-    data-focal-point="{{ swatch_focal_point.x }},{{ swatch_focal_point.y }}"
-  {%- endif -%}
->
-  <span class="visually-hidden">{{ swatch_title }}</span>
-  <span class="swatch-tooltip" aria-hidden="true">{{ swatch_title }}</span>
-
-  {%- if availability_class == 'unavailable' -%}
-    <span class="swatch-diagonal" aria-hidden="true"></span>
-  {%- endif -%}
-</span>
+  {% if swatch_value %}
+    class="swatch{% if shape == 'square' %} swatch--square{% endif %}"
+    style="--swatch--background: {{ swatch_value }};{% if swatch_focal_point %} --swatch-focal-point: {{ swatch_focal_point }};{% endif %}"
+  {% else %}
+    class="swatch swatch--unavailable{% if shape == 'square' %} swatch--square{% endif %}"
+  {% endif %}
+></span>

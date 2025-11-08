@@ -1,41 +1,52 @@
 {% comment %}
-  AUDIT HEADER — WigShop v1.0
-  File: snippets/swatch-input.liquid
-  Purpose: Renders a swatch input with WigShop data attributes
-  Trigger: Used inside variant swatch loops
-  Dependencies: product object, variant object, product_form_id
-  Notes:
-    - Includes data-option-values for parity with dropdowns
-    - Publishes consistent payloads for product-info.js
-    - Forwards full variant object to swatch.liquid for image + tooltip
+  Renders a swatch input component.
+  Accepts:
+  - id: {String} unique input id
+  - type: {String} input type. Accepts 'radio' or 'checkbox', defaults to 'radio' (optional)
+  - name: {String} input name,
+  - value: {ProductOptionValueDrop} input value
+  - swatch: {SwatchDrop} the swatch drop
+  - product_form_id: {String} id of the form associted with the input
+  - checked: {Boolean} default checked status
+  - disabled: {Boolean} default disabled status (optional)
+  - visually_disabled: {Boolean} style the swatch as disabled, but leave the input enabled (optional)
+  - shape: {String} swatch shape. Accepts 'square', defaults to circle (optional)
+  - help_text: {String} additional content to render inside the label (optional)
+  - additional_props: {String} (optional) additional properties to attach to the input
+
+  Usage:
+   {% render 'swatch-input',
+      id: input_id,
+      name: input_name,
+      value: input_value,
+      swatch: swatch,
+      product_form_id: product_form_id,
+      checked: checked
+    %}
 {% endcomment %}
 
 <input
   type="{{ type | default: 'radio' }}"
   id="{{ id }}"
   name="{{ name }}"
-  value="{{ value.id | default: value }}"
+  value="{{ value }}"
   form="{{ product_form_id }}"
   class="swatch-input__input{% if visually_disabled %} visually-disabled{% endif %}"
-  data-variant-swatch
-  data-variant-id="{{ value.id | default: value }}"
-  data-option-values="{{ value.options | join: ',' }}"
-  data-inventory-quantity="{{ value.inventory_quantity | default: 0 }}"
-  data-price="{{ value.price | divided_by: 100.0 }}"
-  data-compare-at="{{ value.compare_at_price | divided_by: 100.0 }}"
-  data-image="{{ value.featured_media | image_url: width: 600, height: 600 }}"
-  {% if checked %}checked{% endif %}
-  {% if disabled %}disabled{% endif %}
-  {% if additional_props %}{{- additional_props -}}{% endif %}
+  {% if checked %}
+    checked
+  {% endif %}
+  {% if disabled %}
+    disabled
+  {% endif %}
+  {% if additional_props %}
+    {{ additional_props }}
+  {% endif %}
 >
 <label
   for="{{ id }}"
-  title="{{ value.title | default: value }}"
+  title="{{ value }}"
   class="swatch-input__label{% if shape == 'square' %} swatch-input__label--square{% endif %}"
 >
-  {% render 'swatch',
-    swatch: swatch,
-    variant: value,
-    shape: shape
-  %}
+  {% render 'swatch', swatch: swatch, shape: shape %}
+  {{ help_text }}
 </label>

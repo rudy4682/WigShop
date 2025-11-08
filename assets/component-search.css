@@ -1,18 +1,10 @@
-/* ===========================
-   SEARCH BAR STYLING
-   =========================== */
-
 .search__input.field__input {
   padding-right: 9.8rem;
-  border-radius: 6px 0 0 6px;
-  /* rounded left corners */
 }
 
 .search__button {
   right: var(--inputs-border-width);
   top: var(--inputs-border-width);
-  border-radius: 0 6px 6px 0;
-  /* rounded right corners */
 }
 
 .reset__button {
@@ -79,109 +71,4 @@ input::-webkit-search-decoration {
 
 .template-search__results {
   position: relative;
-}
-
-/* Mobile tweak: fully rounded search bar when stacked */
-@media screen and (max-width: 749px) {
-  .search__input.field__input {
-    border-radius: 6px;
-    /* all corners rounded */
-  }
-
-  .search__button {
-    border-radius: 6px;
-    /* all corners rounded */
-  }
-}
-
-/* ===========================
-   HEADER ICON TOOLTIP STYLING
-   =========================== */
-
-.header__icon[title] {
-  position: relative;
-}
-
-.header__icon[title]::after {
-  content: attr(title);
-  position: absolute;
-  bottom: -2.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #000;
-  color: #fff;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-  z-index: 20;
-}
-
-.header__icon[title]:hover::after,
-.header__icon[title]:focus::after {
-  opacity: 1;
-}
-
-/* Mobile tweak: show tooltips above icons to avoid viewport edge */
-@media screen and (max-width: 749px) {
-  .header__icon[title]::after {
-    bottom: auto;
-    top: -2.25rem;
-  }
-}
-
-/* ===========================
-   RESPONSIVE SEARCH VISIBILITY
-   =========================== */
-
-/* Default (mobile): hide full form, show icon */
-.header__search-form {
-  display: none;
-}
-
-.header__search-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0.5rem;
-  line-height: 0;
-}
-
-/* Tablet & Desktop: show full form centered, hide icon */
-@media screen and (min-width: 750px) {
-  .header__search-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-    max-width: 400px;
-    width: 100%;
-  }
-
-  .header__search-form input[type="search"] {
-    flex: 1;
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px 0 0 6px;
-  }
-
-  .header__search-form button {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-left: none;
-    border-radius: 0 6px 6px 0;
-    background: #000;
-    color: #fff;
-    cursor: pointer;
-  }
-
-  .header__search-icon {
-    display: none;
-  }
 }

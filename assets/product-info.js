@@ -77,14 +77,6 @@ if (!customElements.get('product-info')) {
             ? this.handleSwapProduct(productUrl, shouldFetchFullPage)
             : this.handleUpdateProductInfo(productUrl),
         });
-
-        // 🔒 Add to Cart gating logic
-        const addBtn = document.querySelector('product-form [name="add"]');
-        if (addBtn) {
-          // If no option values selected, disable; otherwise enable
-          const hasSelection = selectedOptionValues && selectedOptionValues.every((v) => v && v !== '');
-          addBtn.disabled = !hasSelection;
-        }
       }
 
       resetProductFormState() {
@@ -138,7 +130,7 @@ if (!customElements.get('product-info')) {
           })
           .catch((error) => {
             if (error.name === 'AbortError') {
-              // fetch was intentionally aborted by the user; no action needed in production
+              console.log('Fetch aborted by user');
             } else {
               console.error(error);
             }
@@ -216,9 +208,6 @@ if (!customElements.get('product-info')) {
               variant,
             },
           });
-          // Ensure Add to Cart reflects resolved variant
-          const addBtn = document.querySelector('product-form [name="add"]');
-          if (addBtn) addBtn.disabled = !variant;
         };
       }
 
