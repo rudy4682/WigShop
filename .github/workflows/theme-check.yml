@@ -1,10 +1,13 @@
-name: Theme Check
+﻿name: Theme Check
 on:
   push:
     branches: ["**"]
   pull_request:
     branches: ["**"]
 
+permissions:
+  contents: read
+  checks: write
 jobs:
   theme-check:
     runs-on: ubuntu-latest
@@ -14,3 +17,4 @@ jobs:
         uses: shopify/theme-check-action@v2
         with:
           token: ${{ github.token }}
+
