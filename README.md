@@ -1,6 +1,6 @@
 # WigShop
 
-WigShop based on Dawn 15.4.0
+WigShop 1.0.1
 
 Custom Shopify theme for wig e-commerce store.
 
@@ -8,7 +8,7 @@ Custom Shopify theme for wig e-commerce store.
 [Developer tools](#developer-tools) |
 [License](#license)
 
-WigShop is built on Dawn 15.4.0, representing a HTML-first, JavaScript-only-as-needed approach to theme development.
+WigShop is based on Dawn 15.4.0, representing a HTML-first, JavaScript-only-as-needed approach to theme development.
 
 * **Web-native in its purest form:** Themes run on the [evergreen web](https://www.w3.org/2001/tag/doc/evergreen-web/). We leverage the latest web browsers to their fullest, while maintaining support for the older ones through progressive enhancement—not polyfills.
 * **Lean, fast, and reliable:** Functionality and design defaults to “no” until it meets this requirement. Code ships on quality. Themes must be built with purpose. They shouldn’t support each and every feature in Shopify.

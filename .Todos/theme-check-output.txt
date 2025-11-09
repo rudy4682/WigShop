@@ -1,0 +1,67 @@
+
+=== Command: shopify theme check
+ExitCode: 1
+--- STDOUT ---
+
+--- STDERR ---
+Gò¡GöÇ error GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGò«
+Göé                                                                              Göé
+Göé  Expected a plain object value for exclude but got object                    Göé
+Göé                                                                              Göé
+Göé  To investigate the issue, examine this stack trace:                         Göé
+Göé    at readYamlConfigDescription (Users/Randy/AppData/Roaming/npm/node_modul  Göé
+Göé    es/@shopify/cli/dist/index.js:37279)                                      Göé
+Göé    at async resolveConfig (Users/Randy/AppData/Roaming/npm/node_modules/@sh  Göé
+Göé    opify/cli/dist/index.js:37389)                                            Göé
+Göé    at async loadConfig2 (Users/Randy/AppData/Roaming/npm/node_modules/@shop  Göé
+Göé    ify/cli/dist/index.js:37501)                                              Göé
+Göé    at async getThemeAndConfig (Users/Randy/AppData/Roaming/npm/node_modules  Göé
+Göé    /@shopify/cli/dist/index.js:37677)                                        Göé
+Göé    at async themeCheckRun2 (Users/Randy/AppData/Roaming/npm/node_modules/@s  Göé
+Göé    hopify/cli/dist/index.js:37632)                                           Göé
+Göé    at async runThemeCheck (Users/Randy/AppData/Roaming/npm/node_modules/@sh  Göé
+Göé    opify/cli/dist/index.js:192472)                                           Göé
+Göé    at command (Users/Randy/AppData/Roaming/npm/node_modules/@shopify/cli/di  Göé
+Göé    st/index.js:192404)                                                       Göé
+Göé    at run (Users/Randy/AppData/Roaming/npm/node_modules/@shopify/cli/dist/i  Göé
+Göé    ndex.js:192177)                                                           Göé
+Göé    at _run (Users/Randy/AppData/Roaming/npm/node_modules/@shopify/cli/dist/  Göé
+Göé    chunk-X2YIODUW.js:170583)                                                 Göé
+Göé    at runCommand (Users/Randy/AppData/Roaming/npm/node_modules/@shopify/cli  Göé
+Göé    /dist/chunk-X2YIODUW.js:169499)                                           Göé
+Göé                                                                              Göé
+Gò¦GöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGöÇGò»
+
+
+
+
+=== Command: theme-check .
+ExitCode: 1
+--- STDOUT ---
+
+--- STDERR ---
+'theme-check' is not recognized as an internal or external command,
+operable program or batch file.
+
+
+
+=== Command: bundle exec theme-check .
+ExitCode: 1
+--- STDOUT ---
+
+--- STDERR ---
+'bundle' is not recognized as an internal or external command,
+operable program or batch file.
+
+
+
+=== Command: docker run --rm -v %cd%:/work -w /work ruby:3.2 bash -lc "gem install theme-check --no-document && theme-check ."
+ExitCode: 127
+--- STDOUT ---
+
+--- STDERR ---
+docker: error during connect: Head "http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/_ping": open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+Run 'docker run --help' for more information
+
+

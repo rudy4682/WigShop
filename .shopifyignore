@@ -1,0 +1,13 @@
+# WigShop backup folder - do not push to Shopify
+WigshopChanges/*
+
+# Development files
+.git/*
+.github/*
+.vscode/*
+.Todos/*
+*.zip
+
+# Theme development
+.prettierrc.json
+.theme-check.yml

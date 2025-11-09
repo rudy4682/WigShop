@@ -1,6 +1,13 @@
+
 MatchingTranslations:
   enabled: false
 TemplateLength:
   enabled: false
 OrphanedSnippet:
   enabled: false
+
+# Exclude the WigshopChanges staging/backups folder from theme-check runs.
+exclude:
+  - "WigshopChanges/**"
+  - "WigshopChanges/*"
+  - ".Todos/theme-check-output.txt"

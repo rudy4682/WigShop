@@ -1,7 +1,7 @@
 # WigShop Backup - Quick Reference
 
 ## 📁 Location
-All customized files from Dawn 15.4.0 have been backed up to:
+All customized files from WigShop 1.0.1 (based on Dawn 15.4.0) have been backed up to:
 `V:\VS_Repos\VS_Code\Shopify\Themes\WigShop\WigshopChanges\`
 
 ## 📄 Files Backed Up (26 total)
@@ -65,9 +65,9 @@ All customized files from Dawn 15.4.0 have been backed up to:
 - Unused icons archived
 - See `ICON_CLEANUP.md` for details
 
-## 🚀 To Apply to Fresh Dawn Clone
+## 🚀 To Apply to Fresh Installation
 
-1. Clone Dawn 15.4.0
+1. Clone Dawn 15.4.0 or start with fresh WigShop base
 2. Copy all files from `WigshopChanges/` subfolders to corresponding locations
 3. Test thoroughly (see CHANGES_SUMMARY.txt for checklist)
 4. Deploy to Shopify
@@ -78,6 +78,7 @@ Email: rudy4682@gmail.com
 
 ## ⚠️ Important Notes
 
+- **Theme Version**: WigShop 1.0.1 (based on Dawn 15.4.0)
 - **Search functionality**: Reverted to Dawn 15.4.0 defaults (no custom predictive search)
 - **Header layout**: Custom positioning for "top-left" logo position
 - **New files**: 3 custom files created (marked with ⭐)

@@ -1,0 +1,29 @@
+{% comment %}
+  WigShop - Variant picker usage helper
+
+  Example: render with a section setting that controls display mode
+
+    {% render 'product-variant-picker',
+      product: product,
+      block: block,
+      product_form_id: product_form_id,
+      variant_display: section.settings.variant_display
+    %}
+
+  Notes:
+    - Place this snippet in WigshopChanges/ for testing. When you're happy, copy it
+      to `snippets/` at the theme root or wire the section setting into the active
+      `product-variant-picker` snippet used by your `main-product` section.
+    - Valid `variant_display` values: "dropdown", "swatches", "combined", "auto", "none"
+{% endcomment %}
+
+<div class="variant-picker-usage">
+  <p class="caption">Variant display modes (test only):</p>
+  <ul class="list-unstyled">
+    <li><strong>dropdown</strong> — always use select boxes</li>
+    <li><strong>swatches</strong> — prefer swatches where available</li>
+    <li><strong>combined</strong> — show a dropdown plus swatches (when available)</li>
+    <li><strong>auto</strong> — use block settings to decide (default)</li>
+    <li><strong>none</strong> — do not render pickers (useful for single-variant products)</li>
+  </ul>
+</div>

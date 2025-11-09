@@ -175,7 +175,9 @@ if (!customElements.get('product-info')) {
             return;
           }
 
-          this.updateMedia(html, variant?.featured_media?.id);
+          // Pass the variant id to updateMedia so it can resolve the appropriate
+          // featured media id (fallbacks: server HTML, VariantMediaMap JSON)
+          this.updateMedia(html, variant?.id);
 
           const updateSourceFromDestination = (id, shouldHide = (source) => false) => {
             const source = html.getElementById(`${id}-${this.sectionId}`);
@@ -239,8 +241,54 @@ if (!customElements.get('product-info')) {
         document.querySelectorAll(selectors).forEach(({ classList }) => classList.add('hidden'));
       }
 
-      updateMedia(html, variantFeaturedMediaId) {
-        if (!variantFeaturedMediaId) return;
+      updateMedia(html, variantOrId) {
+        // variantOrId may be either a variant id (preferred) or a media id.
+        // Resolve a media id to target in this order:
+        // 1. If a media id was provided directly, use it.
+        // 2. Try to read VariantMediaMap-<sectionId> JSON inserted on the page.
+        // 3. Parse the server HTML for selected variant featured_media.
+
+        let variantId = variantOrId;
+        let mediaId = null;
+
+        // If variantOrId looks like a media id (numeric) but could be either,
+        // we'll still attempt to resolve via the VariantMediaMap first.
+        try {
+          const mapEl = document.getElementById(`VariantMediaMap-${this.sectionId}`);
+          if (mapEl) {
+            const map = JSON.parse(mapEl.textContent || mapEl.innerText || '{}');
+            if (map && typeof map === 'object') {
+              // map keys are variant ids as strings
+              if (variantId != null && map[String(variantId)]) {
+                mediaId = map[String(variantId)];
+              }
+            }
+          }
+        } catch (e) {
+          /* ignore JSON parse errors */
+        }
+
+        // If we didn't get a mediaId from the map, try to parse the server HTML
+        // for the selected variant's featured_media
+        if (!mediaId) {
+          try {
+            const selectedVariantJson = html.querySelector('variant-selects [data-selected-variant]')?.innerHTML;
+            if (selectedVariantJson) {
+              const parsed = JSON.parse(selectedVariantJson);
+              mediaId = parsed?.featured_media?.id ?? null;
+            }
+          } catch (e) {
+            /* ignore parse errors */
+          }
+        }
+
+        // If a mediaId still wasn't resolved, but the caller provided what looks
+        // like a media id, use it.
+        if (!mediaId && variantOrId && String(variantOrId).match(/^\d+$/)) {
+          mediaId = variantOrId;
+        }
+
+        if (!mediaId) return;
 
         const mediaGallerySource = this.querySelector('media-gallery ul');
         const mediaGalleryDestination = html.querySelector(`media-gallery ul`);
@@ -299,10 +347,7 @@ if (!customElements.get('product-info')) {
         }
 
         // set featured media as active in the media gallery
-        this.querySelector(`media-gallery`)?.setActiveMedia?.(
-          `${this.dataset.section}-${variantFeaturedMediaId}`,
-          true
-        );
+        this.querySelector(`media-gallery`)?.setActiveMedia?.(`${this.dataset.section}-${mediaId}`, true);
 
         // update media modal
         const modalContent = this.productModal?.querySelector(`.product-media-modal__content`);

@@ -180,8 +180,9 @@
       "unavailable": "Unavailable",
       "vendor": "Vendor",
       "value_unavailable": "{{ option_value }} - Unavailable",
-      "variant_sold_out_or_unavailable": "Variant sold out or unavailable",
-      "video_exit_message": "{{ title }} opens full screen video in same window.",
+  "variant_sold_out_or_unavailable": "Variant sold out or unavailable",
+  "make_a_selection": "Make a selection",
+  "video_exit_message": "{{ title }} opens full screen video in same window.",
       "view_full_details": "View full details",
       "xr_button": "View in your space",
       "xr_button_label": "View in your space, loads item in augmented reality window",
@@ -189,6 +190,10 @@
       "duties_included": "Duties included.",
       "duties_and_taxes_included": "Duties and taxes included.",
       "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout."
+    },
+    "general": {
+      "available": "Available",
+      "sold_out": "Sold out"
     },
     "modal": {
       "label": "Media gallery"

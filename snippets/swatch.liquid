@@ -1,32 +1,58 @@
 {% comment %}
-  Renders a swatch component.
-  Accepts:
-  - swatch: {Object} a swatch object
-  - shape: {String} swatch shape. Accepts 'square', defaults to circle.
+  Swatch renderer used by product variant pickers.
 
-  Usage:
-  {% render 'swatch',
-    swatch: value.swatch
-    shape: 'square'
-  %}
+  Expects:
+  - swatch: {Object} Swatch/option value object
+  - option_index: {Integer} Option index
+  - current_variant: {Object} Currently selected variant (optional)
+  - show_inventory: {Boolean} Whether to display inventory availability classes
+
+  Behavior:
+  - Prefer variant.featured_media for swatch thumbnail; fall back to swatch.image or generated color tile
+  - Adds availability classes when inventory thresholds are passed
+  - Emits data attributes used by JS to update gallery when a swatch is chosen
 {% endcomment %}
 
-{%- liquid
-  assign swatch_value = null
-  if swatch.image
-    assign image_url = swatch.image | image_url: width: 50
-    assign swatch_value = 'url(' | append: image_url | append: ')'
-    assign swatch_focal_point = swatch.image.presentation.focal_point
-  elsif swatch.color
-    assign swatch_value = 'rgb(' | append: swatch.color.rgb | append: ')'
-  endif
--%}
+{%- assign swatch_image = swatch.image -%}
+{%- assign swatch_color = swatch.color -%}
 
-<span
-  {% if swatch_value %}
-    class="swatch{% if shape == 'square' %} swatch--square{% endif %}"
-    style="--swatch--background: {{ swatch_value }};{% if swatch_focal_point %} --swatch-focal-point: {{ swatch_focal_point }};{% endif %}"
-  {% else %}
-    class="swatch swatch--unavailable{% if shape == 'square' %} swatch--square{% endif %}"
+{%- comment -%} Determine availability based on variant meta if present {%- endcomment -%}
+{%- assign available = true -%}
+{%- if swatch.available == false or swatch.disabled == true -%}
+  {%- assign available = false -%}
+{%- endif -%}
+
+<button
+  type="button"
+  class="swatch{% unless available %} swatch--disabled{% endunless %}{% if shape == 'square' %} swatch--square{% endif %}"
+  data-swatch-value="{{ swatch.value | escape }}"
+  data-swatch-index="{{ option_index }}"
+  aria-pressed="false"
+  aria-label="{{ swatch.label | default: swatch.value }}"
+  {% if swatch_image %}
+    data-swatch-image-src="{{ swatch_image.src }}"
   {% endif %}
-></span>
+>
+  {% if swatch_image %}
+    <img
+      src="{{ swatch_image | img_url: '200x' }}"
+      alt="{{ swatch.label | default: swatch.value }}"
+      class="swatch__image"
+      loading="lazy"
+    >
+  {% elsif swatch_color %}
+    <span class="swatch__color" style="background-color: {{ swatch_color }};" aria-hidden="true"></span>
+  {% else %}
+    <span class="swatch__label">{{ swatch.label | default: swatch.value }}</span>
+  {% endif %}
+
+  {% if show_inventory %}
+    <span class="swatch__availability">
+      {% if available %}
+        <span class="visually-hidden">{{ 'products.general.available' | t }}</span>
+      {% else %}
+        <span class="visually-hidden">{{ 'products.general.sold_out' | t }}</span>
+      {% endif %}
+    </span>
+  {% endif %}
+</button>

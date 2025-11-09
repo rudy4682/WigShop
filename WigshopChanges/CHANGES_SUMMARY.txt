@@ -1,7 +1,8 @@
 WigShop Theme Changes - Based on Dawn 15.4.0
 ===============================================
-Date: November 3, 2025
+Date: November 8, 2025
 Base: Dawn Theme version 15.4.0 (commit 131f4af)
+Current Version: WigShop 1.0.1
 
 IMPORTANT NOTE: All search-related customizations were reverted in commit e3bc32e
 to restore Dawn 15.4.0 defaults. The files in this backup reflect the state after
@@ -14,7 +15,7 @@ MAJOR CUSTOMIZATIONS
 1. BRANDING & THEME INFORMATION
    - Theme renamed from "Dawn" to "WigShop"
    - Theme author changed to "Adams Computer & Network"
-   - Updated theme_version to include "based on Dawn 15.4.0"
+   - Updated theme_version to "WigShop 1.0.1"
    - Modified README.md with WigShop branding
    - Updated theme_support_url to correct domain
 
@@ -32,7 +33,7 @@ MAJOR CUSTOMIZATIONS
 3. SEARCH FUNCTIONALITY (Reverted to Dawn defaults)
    - All predictive search customizations were removed
    - Search now uses original Dawn 15.4.0 implementation
-   - Files reverted: header.liquid, component-search.css, main-search.liquid, 
+   - Files reverted: header.liquid, component-search.css, main-search.liquid,
      predictive-search.liquid, predictive-search.js
 
 4. ICON CLEANUP
@@ -41,19 +42,19 @@ MAJOR CUSTOMIZATIONS
    - Removed deprecated and unused icon files
 
 5. PRODUCT CUSTOMIZATIONS
-   
+
    a) Variant Swatches System:
       - Created custom swatch system for color/pattern selection
       - Files: variant-swatches-custom.js, component-swatch-custom.css
       - Enhanced swatch functionality with image support
       - Added hover states and active selection indicators
-   
+
    b) Product Media:
       - Enhanced media gallery with improved navigation
       - Updated media-gallery.js for better mobile experience
       - Modified product-media-gallery.liquid snippet
       - Added modal improvements in product-media-modal.liquid
-   
+
    c) Product Page Layout:
       - Customized main-product.liquid section
       - Enhanced product information display
@@ -177,10 +178,10 @@ Documentation:
 NOTES FOR FRESH CLONE SETUP
 ===============================================
 
-To apply these customizations to a fresh Dawn 15.4.0 clone:
+To apply these customizations to a fresh WigShop installation:
 
 1. Copy all files from WigshopChanges subdirectories to their corresponding
-   locations in the new Dawn clone
+   locations in the new theme
 
 2. Review and merge any new Dawn features that may have been added since 15.4.0
 
@@ -220,6 +221,7 @@ CONTACT & SUPPORT
 ===============================================
 
 Theme: WigShop
+Version: WigShop 1.0.1
 Based on: Shopify Dawn 15.4.0
 Developer: Adams Computer & Network
 Support: rudy4682@gmail.com

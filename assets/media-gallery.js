@@ -18,6 +18,24 @@ if (!customElements.get('media-gallery')) {
             .querySelector('button')
             .addEventListener('click', this.setActiveMedia.bind(this, mediaToSwitch.dataset.target, false));
         });
+        // If page was opened with a variant specified in the URL (e.g. ?variant=12345)
+        // prefer showing the product hero image on initial load instead of the
+        // variant media. This only runs once during construction and does not
+        // override user interactions that happen afterward.
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (params.has('variant')) {
+            const firstMedia = this.elements.viewer.querySelector('[data-media-id]');
+            if (firstMedia) {
+              // Use the dataset value (format: "<sectionId>-<mediaId>")
+              const mediaId = firstMedia.dataset.mediaId;
+              // activate the hero media (do not prepend)
+              this.setActiveMedia(mediaId, false);
+            }
+          }
+        } catch (e) {
+          /* ignore URL parsing errors */
+        }
         if (this.dataset.desktopLayout.includes('thumbnail') && this.mql.matches) this.removeListSemantic();
       }
 
@@ -45,7 +63,8 @@ if (!customElements.get('media-gallery')) {
 
           if (this.elements.thumbnails) {
             const activeThumbnail = this.elements.thumbnails.querySelector(`[data-target="${mediaId}"]`);
-            activeThumbnail.parentElement.firstChild !== activeThumbnail && activeThumbnail.parentElement.prepend(activeThumbnail);
+            activeThumbnail.parentElement.firstChild !== activeThumbnail &&
+              activeThumbnail.parentElement.prepend(activeThumbnail);
           }
 
           if (this.elements.viewer.slider) this.elements.viewer.resetPages();

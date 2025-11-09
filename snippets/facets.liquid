@@ -13,8 +13,18 @@
 {% endcomment %}
 
 {{ 'component-show-more.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
-{{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+{% comment %} Only load swatch styles/interactions when facets include image-based or swatch filters {% endcomment %}
+{% assign has_swatch_filters = false %}
+{%- for filter in results.filters -%}
+  {%- if filter.presentation == 'image' or filter.presentation == 'swatch' -%}
+    {% assign has_swatch_filters = true %}
+  {%- endif -%}
+{%- endfor -%}
+{%- if has_swatch_filters -%}
+  {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
+  {{ 'component-swatch.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'swatch-interactions.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
 
 {%- liquid
   assign sort_by = results.sort_by | default: results.default_sort_by

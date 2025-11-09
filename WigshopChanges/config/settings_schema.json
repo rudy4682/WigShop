@@ -418,6 +418,24 @@
     ]
   },
   {
+    "name": "Variant display",
+    "settings": [
+      {
+        "type": "select",
+        "id": "variant_display_default",
+        "label": "Default variant display",
+        "options": [
+          { "value": "auto", "label": "Auto (use block settings)" },
+          { "value": "dropdown", "label": "Dropdown" },
+          { "value": "swatches", "label": "Swatches" },
+          { "value": "combined", "label": "Combined (dropdown + swatches)" },
+          { "value": "none", "label": "None (hide pickers)" }
+        ],
+        "default": "auto"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.inputs.name",
     "settings": [
       {
